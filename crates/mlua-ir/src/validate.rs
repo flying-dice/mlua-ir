@@ -81,8 +81,8 @@ fn fields_of(value: &Value, fields: &[Field], types: &HashMap<String, TypeDef>, 
     Ok(())
 }
 
-/// Checks `value` against `ty`. Only what serde would get wrong or explain badly is checked here: lists that are
-/// not sequences, unknown keys, strings outside an enum, a tag no variant has. Scalars are left to serde.
+/// Checks `value` against `ty`, with the path to what is wrong: scalars, lists that are not sequences, unknown keys,
+/// strings outside an enum, a tag no variant has.
 pub(crate) fn check(value: &Value, ty: &Ty, types: &HashMap<String, TypeDef>, path: &str) -> Result<(), String> {
     match (ty, value) {
         (Ty::Optional { .. }, Value::Nil) => Ok(()),
@@ -113,6 +113,22 @@ pub(crate) fn check(value: &Value, ty: &Ty, types: &HashMap<String, TypeDef>, pa
                 check(&entry, item, types, &format!("{path}[\"{shown}\"]"))?;
             }
             Ok(())
+        }
+        (Ty::Boolean, value) if !matches!(value, Value::Boolean(_)) => Err(format!("{}{}", at(path), expected("a boolean", value))),
+        (Ty::String, value) if !matches!(value, Value::String(_)) => Err(format!("{}{}", at(path), expected("a string", value))),
+        (Ty::Number, value) if !matches!(value, Value::Number(_) | Value::Integer(_)) => {
+            Err(format!("{}{}", at(path), expected("a number", value)))
+        }
+        (Ty::Integer { min, max }, value) => {
+            let whole = match *value {
+                #[allow(clippy::cast_precision_loss)]
+                Value::Integer(i) => Some(i as f64),
+                Value::Number(n) if n.is_finite() && n.fract() == 0.0 => Some(n),
+                _ => None,
+            };
+            #[allow(clippy::cast_precision_loss)]
+            let in_range = whole.is_some_and(|n| n >= *min as f64 && n <= *max as f64);
+            if in_range { Ok(()) } else { Err(format!("{}{}", at(path), expected(&format!("a whole number from {min} to {max}"), value))) }
         }
         (Ty::Union { members }, value) => {
             if members.iter().any(|m| check(value, m, types, path).is_ok()) {
