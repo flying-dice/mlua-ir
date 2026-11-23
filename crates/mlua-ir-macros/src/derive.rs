@@ -89,7 +89,7 @@ pub fn shape(input: DeriveInput) -> syn::Result<TokenStream> {
                      tables apart by a string field, and serde's default shape `{ Circle = { r = 2 } }` reads badly in Lua",
                 ));
             };
-            variants_ir(e, &tag, container.rename_all.as_deref(), |variants| {
+            variants_ir(e, &reserved_names(&tag, false), container.rename_all.as_deref(), |variants| {
                 quote! { ::mlua_ir::ir::TypeBody::TaggedUnion { tag: #tag.to_owned(), variants: #variants } }
             })?
         }
@@ -104,15 +104,40 @@ pub fn shape(input: DeriveInput) -> syn::Result<TokenStream> {
     })
 }
 
+/// The names a variant's fields may not take: the tag, and for an error the fields every error carries.
+fn reserved_names(tag: &str, error: bool) -> Vec<String> {
+    let mut names = vec![tag.to_owned()];
+    if error {
+        names.extend(["message".to_owned(), "op".to_owned()]);
+    }
+    names
+}
+
 fn variants_ir(
     e: &syn::DataEnum,
-    _tag: &str,
+    reserved: &[String],
     rename_all: Option<&str>,
     wrap: impl FnOnce(TokenStream) -> TokenStream,
 ) -> syn::Result<TokenStream> {
     let mut variants = Vec::new();
     for v in &e.variants {
         let attrs = serde(&v.attrs)?;
+        if let Fields::Named(named) = &v.fields {
+            for field in &named.named {
+                let field_attrs = serde(&field.attrs)?;
+                let ident = field.ident.as_ref().map(ToString::to_string).unwrap_or_default();
+                let name = field_attrs.rename.unwrap_or_else(|| renamed(&ident, attrs.rename_all.as_deref()));
+                if reserved.contains(&name) {
+                    return Err(syn::Error::new_spanned(
+                        field,
+                        format!(
+                            "a field named `{name}` clashes with the `{name}` every value of this type carries ({}): name it something else (`reason`, `detail`)",
+                            reserved.join(", ")
+                        ),
+                    ));
+                }
+            }
+        }
         let tag_value = attrs.rename.unwrap_or_else(|| renamed(&v.ident.to_string(), rename_all));
         let doc = doc_expr(&v.attrs);
         let fields = match &v.fields {
@@ -180,7 +205,7 @@ pub fn lua_error(input: DeriveInput) -> syn::Result<TokenStream> {
             "an error needs `#[serde(tag = \"kind\", rename_all = \"snake_case\")]`: its kinds are the declared union",
         ));
     }
-    let body = variants_ir(e, "kind", container.rename_all.as_deref(), |variants| {
+    let body = variants_ir(e, &reserved_names("kind", true), container.rename_all.as_deref(), |variants| {
         quote! {
             ::mlua_ir::ir::TypeBody::Error { tag: "kind".to_owned(), variants: #variants, common: ::mlua_ir::common_fields() }
         }
