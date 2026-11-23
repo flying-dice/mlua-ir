@@ -17,8 +17,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_reflection::{ContainerFormat, Format, FormatHolder, Named, Samples, Tracer, TracerConfig, VariantFormat};
 
-use crate::convert::{FromLuaArg, IntoLuaRet, expected, from_serde, to_serde};
-use crate::ir::{EnumVariant, Field, Ty, TypeBody, TypeDef};
+use crate::convert::{FromLuaArg, IntoLuaRet, from_serde, to_serde};
+use crate::ir::{EnumVariant, Field, Ty, TypeBody};
 use crate::registry::{Definition, Registry};
 use crate::shape::Shape;
 
@@ -168,61 +168,10 @@ impl<T: Serialize + DeserializeOwned + 'static> Shape for Foreign<T> {
     }
 }
 
-/// Checks `value` against `ty`: unknown keys and strings outside an enum are refused, with the path to them.
-fn check(value: &Value, ty: &Ty, types: &HashMap<String, TypeDef>, path: &str) -> Result<(), String> {
-    let at = |path: &str| if path.is_empty() { String::new() } else { format!("{path}: ") };
-    match (ty, value) {
-        (Ty::Optional { .. }, Value::Nil) => Ok(()),
-        (Ty::Optional { inner }, value) => check(value, inner, types, path),
-        (Ty::List { item }, Value::Table(table)) => {
-            for (index, entry) in (1..).zip(table.sequence_values::<Value>()) {
-                check(&entry.map_err(|e| e.to_string())?, item, types, &format!("{path}[{index}]"))?;
-            }
-            Ok(())
-        }
-        (Ty::Map { value: item, .. }, Value::Table(table)) => {
-            for pair in table.pairs::<String, Value>() {
-                let (key, entry) = pair.map_err(|e| e.to_string())?;
-                check(&entry, item, types, &format!("{path}[\"{key}\"]"))?;
-            }
-            Ok(())
-        }
-        (Ty::Named { name }, value) => match types.get(name).map(|t| &t.body) {
-            Some(TypeBody::Record { fields }) => {
-                let Value::Table(table) = value else { return Err(format!("{}{}", at(path), expected("a table", value))) };
-                for pair in table.pairs::<Value, Value>() {
-                    let (key, entry) = pair.map_err(|e| e.to_string())?;
-                    let key = key.to_string().unwrap_or_default();
-                    let Some(field) = fields.iter().find(|f| f.name == key) else {
-                        let names: Vec<&str> = fields.iter().map(|f| f.name.as_str()).collect();
-                        return Err(format!("{}unknown field `{key}`, expected one of {}", at(path), names.join(", ")));
-                    };
-                    let inner = if path.is_empty() { key.clone() } else { format!("{path}.{key}") };
-                    check(&entry, &field.ty, types, &inner)?;
-                }
-                Ok(())
-            }
-            Some(TypeBody::StringEnum { variants }) => match value {
-                Value::String(s) if variants.iter().any(|v| s.to_str().is_ok_and(|t| *t == v.value)) => Ok(()),
-                other => {
-                    let names: Vec<String> = variants.iter().map(|v| format!("\"{}\"", v.value)).collect();
-                    Err(format!("{}{}", at(path), expected(&format!("one of {}", names.join(", ")), other)))
-                }
-            },
-            Some(TypeBody::Alias { ty }) => check(value, ty, types, path),
-            _ => Ok(()),
-        },
-        _ => Ok(()),
-    }
-}
-
 impl<T: Serialize + DeserializeOwned + 'static> FromLuaArg for Foreign<T> {
     fn from_lua_arg(value: Value, lua: &Lua) -> Result<Self, String> {
-        let mut reg = Registry::new();
-        reg.enter_module("foreign");
-        let ty = <Self as Shape>::shape(&mut reg);
-        let types: HashMap<String, TypeDef> = reg.into_types().into_iter().map(|t| (t.name.clone(), t)).collect();
-        check(&value, &ty, &types, "")?;
+        let shaped = crate::validate::shape_of::<Self>(Some("foreign"));
+        crate::validate::check(&value, &shaped.0, &shaped.1, "")?;
         from_serde(value, lua).map(Foreign)
     }
 }

@@ -22,9 +22,9 @@ pub trait IntoLuaRet {
 /// A type that is plain data to a script and converts through serde (what `#[derive(Shape)]` marks).
 pub trait SerdeShape {}
 
-impl<T: SerdeShape + DeserializeOwned> FromLuaArg for T {
+impl<T: SerdeShape + crate::shape::Shape + DeserializeOwned + 'static> FromLuaArg for T {
     fn from_lua_arg(value: Value, lua: &Lua) -> Result<Self, String> {
-        from_serde(value, lua)
+        crate::validate::from_checked(value, lua)
     }
 }
 

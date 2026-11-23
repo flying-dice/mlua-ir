@@ -185,7 +185,7 @@ pub fn options(input: DeriveInput) -> syn::Result<TokenStream> {
             ) -> ::core::result::Result<Self, ::std::string::String> {
                 match value {
                     ::mlua_ir::__private::mlua::Value::Nil => Ok(<Self as ::core::default::Default>::default()),
-                    value => ::mlua_ir::from_serde(value, lua),
+                    value => ::mlua_ir::from_checked(value, lua),
                 }
             }
         }

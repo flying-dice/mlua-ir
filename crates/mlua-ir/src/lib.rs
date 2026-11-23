@@ -22,6 +22,7 @@ mod runtime;
 mod shape;
 mod stream;
 mod unknown;
+mod validate;
 
 pub use bytes::Bytes;
 pub use callback::{Callback, name_params};
@@ -36,6 +37,7 @@ pub use runtime::{ModuleEntry, arg, doc, install, modules, no_more_args, param, 
 pub use shape::Shape;
 pub use stream::Stream;
 pub use unknown::{Live, Unknown, UnknownReason};
+pub use validate::from_checked;
 
 pub use mlua_ir_macros::{LuaError, Object, OneOf, Options, Shape, Text, module, object};
 
