@@ -72,6 +72,29 @@
           "is_async": false
         },
         {
+          "name": "identity",
+          "doc": "`value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).\n\n```luau\nlocal t = {}\nassert(json.identity(t) == t)\n```",
+          "params": [
+            {
+              "name": "value",
+              "ty": {
+                "kind": "unknown",
+                "reason": "whatever the script passed: it comes back as it is, the same table or function"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "unknown",
+              "reason": "whatever the script passed: it comes back as it is, the same table or function"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
           "name": "encode",
           "doc": "Write plain data as JSON text.",
           "params": [

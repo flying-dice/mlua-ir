@@ -18,6 +18,17 @@ pub struct Callback<F> {
     _signature: PhantomData<F>,
 }
 
+impl<F> Callback<F> {
+    /// The script's function, for a host that runs it itself (as a coroutine, on a scheduler).
+    pub fn function(&self) -> &Function {
+        &self.func
+    }
+
+    pub fn into_function(self) -> Function {
+        self.func
+    }
+}
+
 fn returns_of<R: Shape>(reg: &mut Registry) -> Returns {
     match R::shape(reg) {
         Ty::Nil => Returns::None,

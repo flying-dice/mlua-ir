@@ -63,3 +63,35 @@ impl<R> IntoLuaRet for Unknown<R> {
         to_serde(&self.value, lua)
     }
 }
+
+/// A Lua value passed through as it is: the same table, function or userdata, not a copy. Declared `unknown` with
+/// the reason `R` gives, like [`Unknown`]; use it where the value must stay live (what a script's own function
+/// returned, handed back to the script), and [`Unknown`] where plain data is enough.
+pub struct Live<R> {
+    pub value: Value,
+    _reason: PhantomData<R>,
+}
+
+impl<R> Live<R> {
+    pub fn new(value: Value) -> Self {
+        Self { value, _reason: PhantomData }
+    }
+}
+
+impl<R: UnknownReason> Shape for Live<R> {
+    fn shape(_: &mut Registry) -> Ty {
+        Ty::Unknown { reason: R::REASON.to_owned() }
+    }
+}
+
+impl<R> FromLuaArg for Live<R> {
+    fn from_lua_arg(value: Value, _: &Lua) -> Result<Self, String> {
+        Ok(Self::new(value))
+    }
+}
+
+impl<R> IntoLuaRet for Live<R> {
+    fn into_lua_ret(self, _: &Lua, _: &'static str) -> mlua::Result<Value> {
+        Ok(self.value)
+    }
+}

@@ -40,6 +40,21 @@ pub mod json {
         })
     }
 
+    mlua_ir::unknown_reason!(
+        /// Why `identity` passes its value through untyped.
+        Anything = "whatever the script passed: it comes back as it is, the same table or function"
+    );
+
+    /// `value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).
+    ///
+    /// ```luau
+    /// local t = {}
+    /// assert(json.identity(t) == t)
+    /// ```
+    pub fn identity(value: mlua_ir::Live<Anything>) -> mlua_ir::Live<Anything> {
+        value
+    }
+
     /// Write plain data as JSON text.
     pub fn encode(value: Unknown<AnyData>) -> String {
         value.value.to_string()

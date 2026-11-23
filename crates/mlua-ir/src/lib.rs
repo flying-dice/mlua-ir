@@ -35,7 +35,7 @@ pub use returns::IntoReturn;
 pub use runtime::{ModuleEntry, arg, doc, install, modules, no_more_args, param, schema};
 pub use shape::Shape;
 pub use stream::Stream;
-pub use unknown::{Unknown, UnknownReason};
+pub use unknown::{Live, Unknown, UnknownReason};
 
 pub use mlua_ir_macros::{LuaError, Object, OneOf, Options, Shape, Text, module, object};
 

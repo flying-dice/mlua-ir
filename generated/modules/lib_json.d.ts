@@ -22,6 +22,15 @@ declare module "lib:json" {
    * ```
    */
   export function decode(this: void, text: string): LuaMultiReturn<[unknown, undefined] | [undefined, lib_json_JsonError]>
+  /**
+   * `value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).
+   *
+   * ```luau
+   * local t = {}
+   * assert(json.identity(t) == t)
+   * ```
+   */
+  export function identity(this: void, value: unknown): unknown
   /** Write plain data as JSON text. */
   export function encode(this: void, value: unknown): string
   export type JsonError = lib_json_JsonError

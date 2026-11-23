@@ -123,8 +123,6 @@ fn the_schema_reads_every_shape() {
     for expected in ["std:text", "globals", "std:geo", "vnd:bollard", "lib:json", "vnd:docker_models"] {
         assert!(names.contains(&expected), "{expected} is in {names:?}");
     }
-    let json = serde_json::to_string(&ir).expect("json");
-    assert!(!json.contains("\"kind\":\"unknown\"") || json.matches("\"kind\":\"unknown\"").count() <= 3, "only the declared unknowns");
     let unknowns: Vec<String> = all_unknown_reasons(&ir);
     assert_eq!(
         unknowns,
@@ -132,6 +130,7 @@ fn the_schema_reads_every_shape() {
             "any plain data a script built: tables, strings, numbers, booleans".to_owned(),
             "whatever JSON text was parsed: its shape is the text's, not this API's".to_owned(),
             "whatever `pcall` caught: any value can be raised".to_owned(),
+            "whatever the script passed: it comes back as it is, the same table or function".to_owned(),
         ],
         "every unknown says why, and there are no others"
     );

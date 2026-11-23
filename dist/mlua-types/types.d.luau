@@ -45,6 +45,13 @@ export type lib_json = {
 	--- end
 	--- ```
 	decode: (text: string) -> (unknown, lib_json_JsonError?),
+	--- `value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).
+	---
+	--- ```luau
+	--- local t = {}
+	--- assert(json.identity(t) == t)
+	--- ```
+	identity: (value: unknown) -> unknown,
 	--- Write plain data as JSON text.
 	encode: (value: unknown) -> string,
 }
