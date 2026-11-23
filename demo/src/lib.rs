@@ -19,6 +19,7 @@ pub mod s15_validated_text;
 pub mod s16_foreign_types;
 pub mod s17_genuinely_unknown;
 pub mod s18_whole_module_bollard;
+pub mod s19_host_state_and_bytes;
 
 /// The version the schema is published under.
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

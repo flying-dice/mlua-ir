@@ -36,7 +36,7 @@ fn luau_files(dir: &Path) -> Vec<PathBuf> {
 #[test]
 fn every_scenario_script_runs() {
     let files = luau_files(&root().join("lua"));
-    assert_eq!(files.len(), 18, "one script per scenario 01..18");
+    assert_eq!(files.len(), 19, "one script per scenario 01..19");
     for file in files {
         let code = std::fs::read_to_string(&file).expect("the script reads");
         let name = file.file_name().expect("a name").to_string_lossy().into_owned();
@@ -81,6 +81,7 @@ fn what_the_declarations_refuse_is_refused_at_run_time() {
         (r#"require("vnd:docker_models").line({ State = "sleeping" })"#, "State: expected one of \"\", \"created\", \"running\""),
         (r#"require("std:math2").TAU = 3"#, "readonly"),
         (r#"require("std:collections").Counter.new().increment()"#, "bad argument `self` to `Counter.increment`"),
+        (r#"require("std:blob").to_hex(1)"#, "std:blob.to_hex: argument #1 'data': expected a string, got 1"),
         (r#"require("nope:module")"#, "no module named \"nope:module\""),
     ];
     for (code, expected) in cases {

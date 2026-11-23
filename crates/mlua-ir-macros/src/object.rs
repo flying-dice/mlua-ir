@@ -1,11 +1,11 @@
-//! `#[object] impl T { ... }`: `&self` fns are `:` methods, `#[get]` fns are read-only fields, fns without
+//! `#[object] impl T { ... }`: `&self` fns are `:` methods, `#[get]` fns are read-only fields, a `#[to_string]` fn is `tostring(x)`, fns without
 //! `self` are statics (constructors), `async fn` yields the script while it waits.
 
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{ImplItem, ItemImpl, LitStr, Type, Visibility};
 
-use crate::attrs::doc_expr;
+use crate::attrs::{doc_expr, take_host_hint};
 use crate::function::{self, Receiver};
 
 pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream> {
@@ -36,21 +36,36 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
     let mut fields_install = Vec::new();
     let mut methods_ir = Vec::new();
     let mut methods_install = Vec::new();
+    let mut to_string_install = Vec::new();
     let mut statics_ir = Vec::new();
     let mut statics_install = Vec::new();
 
     for item in &mut block.items {
         let ImplItem::Fn(f) = item else { continue };
         let is_getter = f.attrs.iter().any(|a| a.path().is_ident("get"));
-        f.attrs.retain(|a| !a.path().is_ident("get"));
+        let is_to_string = f.attrs.iter().any(|a| a.path().is_ident("to_string"));
+        f.attrs.retain(|a| !a.path().is_ident("get") && !a.path().is_ident("to_string"));
         if !matches!(f.vis, Visibility::Public(_)) {
             continue;
         }
+        let hint = take_host_hint(&mut f.attrs)?;
         let ident = f.sig.ident.clone();
         let name = ident.to_string();
+        let qualified = format!("{short}.{name}");
         let doc = doc_expr(&f.attrs);
         let (receiver, sig) = function::read(&f.sig)?;
         match receiver {
+            Receiver::Ref if is_to_string => {
+                if !sig.params.is_empty() || sig.is_async || !matches!(&sig.ret, Type::Path(p) if p.path.is_ident("String")) {
+                    return Err(syn::Error::new_spanned(&f.sig, "a `#[to_string]` method takes only `&self`, is not async, and returns `String`"));
+                }
+                let op = format!("{base}:{name}");
+                to_string_install.push(quote! {
+                    methods.add_meta_method(::mlua_ir::__private::mlua::MetaMethod::ToString, |__lua, this, (): ()| {
+                        ::mlua_ir::IntoLuaRet::into_lua_ret(this.#ident(), __lua, #op)
+                    });
+                });
+            }
             Receiver::Ref if is_getter => {
                 if !sig.params.is_empty() || sig.is_async {
                     return Err(syn::Error::new_spanned(&f.sig, "a `#[get]` field takes only `&self` and is not async"));
@@ -79,19 +94,24 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
                         return Err(syn::Error::new_spanned(&f.sig, "an async method takes `&self`"));
                     }
                     let (read, args) = function::read_args(&sig, &op, &quote!(&__lua));
+                    let info = function::call_info(module.as_deref(), &qualified, &op, hint.as_deref());
                     quote! {
                         methods.add_async_method(#name, |__lua, this: ::mlua_ir::__private::mlua::UserDataRef<Self>, __args: ::mlua_ir::__private::mlua::MultiValue| async move {
                             #read
-                            ::mlua_ir::IntoReturn::into_return(this.#ident(#(#args),*).await, &__lua, #op)
+                            let __ret = ::mlua_ir::__private::call_async(#info, async move { this.#ident(#(#args),*).await }).await?;
+                            ::mlua_ir::IntoReturn::into_return(__ret, &__lua, #op)
                         });
                     }
                 } else {
                     let (read, args) = function::read_args(&sig, &op, &quote!(__lua));
                     let add = if mutable { quote!(add_method_mut) } else { quote!(add_method) };
+                    let info = function::call_info(module.as_deref(), &qualified, &op, hint.as_deref());
                     quote! {
                         methods.#add(#name, |__lua, this, __args: ::mlua_ir::__private::mlua::MultiValue| {
                             #read
-                            ::mlua_ir::IntoReturn::into_return(this.#ident(#(#args),*), __lua, #op)
+                            ::mlua_ir::__private::call_sync(#info, || {
+                                ::mlua_ir::IntoReturn::into_return(this.#ident(#(#args),*), __lua, #op)
+                            })
                         });
                     }
                 });
@@ -99,7 +119,8 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
             Receiver::None => {
                 let op = format!("{base}.{name}");
                 statics_ir.push(function::ir(&name, &doc, &sig));
-                let value = function::lua_function(&quote!(<#self_ty>::#ident), &sig, &op);
+                let info = function::call_info(module.as_deref(), &qualified, &op, hint.as_deref());
+                let value = function::lua_function(&quote!(<#self_ty>::#ident), &info, &sig, &op);
                 statics_install.push(quote! { table.raw_set(#name, #value)?; });
             }
         }
@@ -134,6 +155,7 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
             fn add_methods<M: ::mlua_ir::__private::mlua::UserDataMethods<Self>>(methods: &mut M) {
                 let _ = &methods;
                 #(#methods_install)*
+                #(#to_string_install)*
             }
         }
     })

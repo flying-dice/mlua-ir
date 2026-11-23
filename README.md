@@ -54,8 +54,17 @@ The one escape hatch, `Unknown<Reason>`, won't compile without saying why no sha
 
 Functions, globals and constants, typed tables, options tables with defaults, string and tagged unions, lists and
 maps, multiple returns, `nil` for absence, returned and raised errors, userdata with fields, methods and
-constructors, async functions, streams, callbacks, validated strings, other crates' types, and a diff between two
-schemas that flags breaking changes.
+constructors, `tostring`, async functions, streams, callbacks, validated strings, raw bytes, other crates' types, and
+a diff between two schemas that flags breaking changes.
+
+## Embedding
+
+A host program (one with its own `require`, scheduler and tracing) takes part without the modules knowing:
+
+- `mlua_ir::modules()` lists every linked module (name, kind, `install`), so the host puts them into its own `require`.
+- `mlua_ir::set_host(host)` is told of every call: `Host::enter` opens a span around a sync call, `Host::wrap` runs
+  an async body under the host's rules. `#[host("hint")]` on a function or method passes the host an opaque word.
+- A function may take `lua: &Lua` (async: `lua: Lua`) first; the script does not pass it and the IR leaves it out.
 
 ## The proof
 

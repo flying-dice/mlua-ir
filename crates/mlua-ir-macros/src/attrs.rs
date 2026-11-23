@@ -171,3 +171,13 @@ pub fn callback_names(ty: &Type) -> Vec<String> {
         _ => Vec::new(),
     }
 }
+
+/// Takes `#[host("hint")]` off an item: the opaque word a host may read (`mlua_ir::Call::hint`).
+pub fn take_host_hint(attrs: &mut Vec<Attribute>) -> syn::Result<Option<String>> {
+    let mut hint = None;
+    for attr in attrs.iter().filter(|a| a.path().is_ident("host")) {
+        hint = Some(attr.parse_args::<LitStr>()?.value());
+    }
+    attrs.retain(|a| !a.path().is_ident("host"));
+    Ok(hint)
+}

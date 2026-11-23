@@ -5,7 +5,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{Item, ItemMod, LitStr, Visibility, parse_quote};
 
-use crate::attrs::{derives, doc_expr, serde};
+use crate::attrs::{derives, doc_expr, serde, take_host_hint};
 use crate::function;
 
 pub enum Kind {
@@ -75,13 +75,15 @@ pub fn expand(kind: Kind, mut module: ItemMod) -> syn::Result<TokenStream> {
                 let ident = &f.sig.ident;
                 let fname = ident.to_string();
                 let op = format!("{op_prefix}{fname}");
+                let hint = take_host_hint(&mut f.attrs)?;
                 let (receiver, sig) = function::read(&f.sig)?;
                 if !matches!(receiver, function::Receiver::None) {
                     return Err(syn::Error::new_spanned(&f.sig, "a module function has no `self`"));
                 }
                 let doc = doc_expr(&f.attrs);
                 functions_ir.push(function::ir(&fname, &doc, &sig));
-                let value = function::lua_function(&quote!(#ident), &sig, &op);
+                let info = function::call_info(module_name.as_deref(), &fname, &op, hint.as_deref());
+                let value = function::lua_function(&quote!(#ident), &info, &sig, &op);
                 functions_install.push(quote! { table.raw_set(#fname, #value)?; });
             }
             Item::Const(c) if matches!(c.vis, Visibility::Public(_)) => {

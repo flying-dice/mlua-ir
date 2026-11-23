@@ -8,11 +8,13 @@
 
 pub mod ir;
 
+mod bytes;
 mod callback;
 mod convert;
 mod error;
 mod foreign;
 mod harvest;
+mod host;
 mod object;
 mod registry;
 mod returns;
@@ -21,14 +23,16 @@ mod shape;
 mod stream;
 mod unknown;
 
+pub use bytes::Bytes;
 pub use callback::{Callback, name_params};
 pub use convert::{FromLuaArg, IntoLuaRet, SerdeShape, expected, from_serde, to_serde};
 pub use error::{Caught, LuaError, Raise, Raised, common_fields, error_value};
 pub use foreign::Foreign;
+pub use host::{Body, Call, Erased, Host, set_host};
 pub use object::ObjectDef;
 pub use registry::{Definition, Registry};
 pub use returns::IntoReturn;
-pub use runtime::{ModuleEntry, arg, doc, install, no_more_args, param, schema};
+pub use runtime::{ModuleEntry, arg, doc, install, modules, no_more_args, param, schema};
 pub use shape::Shape;
 pub use stream::Stream;
 pub use unknown::{Unknown, UnknownReason};
@@ -50,6 +54,7 @@ impl<T> MaybeSend for T {}
 
 #[doc(hidden)]
 pub mod __private {
+    pub use crate::host::{call_async, call_sync};
     pub use inventory;
     pub use mlua;
     pub use serde_json;

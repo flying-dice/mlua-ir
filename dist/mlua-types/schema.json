@@ -98,6 +98,108 @@
       "objects": []
     },
     {
+      "name": "std:blob",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "to_hex",
+          "doc": "The hex text of raw bytes (any byte, including `\\0`).\n\n```luau\nassert(blob.to_hex(\"\\0\\255a\") == \"00ff61\")\n```",
+          "params": [
+            {
+              "name": "data",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "from_hex",
+          "doc": "The raw bytes of hex text.\n\n```luau\nlocal data = assert(blob.from_hex(\"00ff61\"))\nassert(data == \"\\0\\255a\")\nlocal _, err = blob.from_hex(\"0\")\nassert(err ~= nil and err.kind == \"odd_length\")\n```",
+          "params": [
+            {
+              "name": "text",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "string"
+            },
+            "err": {
+              "kind": "named",
+              "name": "std_blob_HexError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "global_type",
+          "doc": "A global of the script's own state: the Lua state is a parameter the script does not pass.\n\n```luau\nassert(blob.global_type(\"print\") == \"function\")\n```",
+          "params": [
+            {
+              "name": "name",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "global_type_later",
+          "doc": "The same, after yielding once.\n\n```luau\nassert(blob.global_type_later(\"print\") == \"function\")\n```",
+          "params": [
+            {
+              "name": "name",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": true
+        }
+      ],
+      "constants": [],
+      "objects": [
+        {
+          "name": "Label",
+          "type_name": "std_blob_Label"
+        }
+      ]
+    },
+    {
       "name": "std:collections",
       "kind": "require",
       "doc": null,
@@ -1076,6 +1178,121 @@
             },
             "default": null,
             "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_blob_HexError",
+      "short_name": "HexError",
+      "module": "std:blob",
+      "rust": "mlua_ir_demo::s19_host_state_and_bytes::blob::HexError",
+      "doc": "Why hex text could not be read.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "odd_length",
+            "doc": "The text has an odd number of digits.",
+            "fields": [
+              {
+                "name": "len",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "not_hex",
+            "doc": "A character is not a hex digit.",
+            "fields": [
+              {
+                "name": "found",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_blob_Label",
+      "short_name": "Label",
+      "module": "std:blob",
+      "rust": "mlua_ir_demo::s19_host_state_and_bytes::blob::Label",
+      "doc": "A name that prints as itself.",
+      "body": {
+        "kind": "object",
+        "fields": [],
+        "methods": [
+          {
+            "name": "text_later",
+            "doc": "The same, after yielding once, for a host to see a method.",
+            "params": [],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "string"
+              }
+            },
+            "raises": null,
+            "is_async": true
+          }
+        ],
+        "statics": [
+          {
+            "name": "new",
+            "doc": "A label.",
+            "params": [
+              {
+                "name": "text",
+                "ty": {
+                  "kind": "string"
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "named",
+                "name": "std_blob_Label"
+              }
+            },
+            "raises": null,
+            "is_async": false
           }
         ]
       }

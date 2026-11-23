@@ -19,7 +19,9 @@ pub struct ModuleEntry {
 
 inventory::collect!(ModuleEntry);
 
-fn entries() -> Vec<&'static ModuleEntry> {
+/// Every module this binary links, by name: for a host that puts them into its own `require`. Call a module's
+/// `install` for its table; a [`ModuleKind::Globals`] module's table holds the globals to set.
+pub fn modules() -> Vec<&'static ModuleEntry> {
     let mut entries: Vec<&ModuleEntry> = inventory::iter::<ModuleEntry>.into_iter().collect();
     entries.sort_by_key(|e| e.name);
     entries
@@ -28,7 +30,7 @@ fn entries() -> Vec<&'static ModuleEntry> {
 /// The whole surface as IR: every module this binary links, and every type they reach.
 pub fn schema(version: &str) -> Ir {
     let mut reg = Registry::new();
-    let modules = entries().into_iter().map(|e| (e.describe)(&mut reg)).collect();
+    let modules = modules().into_iter().map(|e| (e.describe)(&mut reg)).collect();
     let mut types = reg.into_types();
     types.sort_by(|a, b| a.name.cmp(&b.name));
     Ir { version: version.to_owned(), modules, types }
@@ -37,8 +39,8 @@ pub fn schema(version: &str) -> Ir {
 /// Installs every module: globals into the globals, the rest behind `require("<name>")`.
 pub fn install(lua: &Lua) -> mlua::Result<()> {
     let globals = lua.globals();
-    let mut modules: HashMap<&'static str, Table> = HashMap::new();
-    for entry in entries() {
+    let mut required: HashMap<&'static str, Table> = HashMap::new();
+    for entry in modules() {
         let table = (entry.install)(lua)?;
         match entry.kind {
             ModuleKind::Globals => {
@@ -48,12 +50,12 @@ pub fn install(lua: &Lua) -> mlua::Result<()> {
                 }
             }
             ModuleKind::Require => {
-                modules.insert(entry.name, table);
+                required.insert(entry.name, table);
             }
         }
     }
     let require = lua.create_function(move |_, name: String| {
-        modules
+        required
             .get(name.as_str())
             .cloned()
             .ok_or_else(|| mlua::Error::runtime(format!("no module named \"{name}\"")))
