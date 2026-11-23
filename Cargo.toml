@@ -7,6 +7,7 @@ edition = "2024"
 version = "0.1.0"
 publish = false
 repository = "https://github.com/flying-dice/mlua-ir"
+license = "MIT OR Apache-2.0"
 
 [workspace.dependencies]
 mlua = { version = "0.12.2", features = ["luau", "async", "serialize"] }

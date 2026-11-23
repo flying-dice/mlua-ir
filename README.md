@@ -85,3 +85,7 @@ cargo run -p mlua-ir-demo --bin schema   # write generated/: schema.json, types.
 - `crates/mlua-ir-macros`: `#[module]`, `#[object]` and the derives
 - `crates/mlua-ir-gen`: the Luau and TypeScript generators and the schema diff
 - `demo/`: one working module per scenario, from a single function to a whole Docker client
+
+## License
+
+Licensed under either of [Apache License, Version 2.0](LICENSE-APACHE) or [MIT license](LICENSE-MIT), at your option.
