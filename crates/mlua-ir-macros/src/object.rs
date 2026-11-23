@@ -2,6 +2,7 @@
 //! `self` are statics (constructors), `async fn` yields the script while it waits.
 
 use proc_macro2::TokenStream;
+use syn::ext::IdentExt;
 use quote::quote;
 use syn::{ImplItem, ItemImpl, LitStr, Type, Visibility};
 
@@ -50,7 +51,7 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
         }
         let hint = take_host_hint(&mut f.attrs)?;
         let ident = f.sig.ident.clone();
-        let name = ident.to_string();
+        let name = ident.unraw().to_string();
         let qualified = format!("{short}.{name}");
         let doc = doc_expr(&f.attrs);
         let (receiver, sig) = function::read(&f.sig)?;

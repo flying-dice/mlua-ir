@@ -2,6 +2,7 @@
 //! module's surface. Nothing is registered by hand.
 
 use proc_macro2::TokenStream;
+use syn::ext::IdentExt;
 use quote::quote;
 use syn::{Item, ItemMod, LitStr, Visibility, parse_quote};
 
@@ -73,7 +74,7 @@ pub fn expand(kind: Kind, mut module: ItemMod) -> syn::Result<TokenStream> {
             }
             Item::Fn(f) if matches!(f.vis, Visibility::Public(_)) => {
                 let ident = &f.sig.ident;
-                let fname = ident.to_string();
+                let fname = ident.unraw().to_string();
                 let op = format!("{op_prefix}{fname}");
                 let hint = take_host_hint(&mut f.attrs)?;
                 let (receiver, sig) = function::read(&f.sig)?;
@@ -88,7 +89,7 @@ pub fn expand(kind: Kind, mut module: ItemMod) -> syn::Result<TokenStream> {
             }
             Item::Const(c) if matches!(c.vis, Visibility::Public(_)) => {
                 let ident = &c.ident;
-                let cname = ident.to_string();
+                let cname = ident.unraw().to_string();
                 let ty = &c.ty;
                 let doc = doc_expr(&c.attrs);
                 let op = format!("{op_prefix}{cname}");

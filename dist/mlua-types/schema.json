@@ -994,6 +994,36 @@
           },
           "raises": null,
           "is_async": false
+        },
+        {
+          "name": "loop",
+          "doc": "`text` repeated `times` times. A Rust keyword as a name is a raw identifier: `r#loop` is `loop` to a\nscript.",
+          "params": [
+            {
+              "name": "text",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            },
+            {
+              "name": "times",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
         }
       ],
       "constants": [],

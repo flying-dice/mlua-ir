@@ -429,6 +429,9 @@ export type std_text = {
 	--- assert(text.pad("id", 6) == "id    ")
 	--- ```
 	pad: (text: string, width: number) -> string,
+	--- `text` repeated `times` times. A Rust keyword as a name is a raw identifier: `r#loop` is `loop` to a
+	--- script.
+	loop: (text: string, times: number) -> string,
 }
 
 -- ===== std:time =====

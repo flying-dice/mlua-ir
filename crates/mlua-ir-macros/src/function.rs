@@ -1,6 +1,7 @@
 //! A Rust function as a Lua function: its IR, and the mlua closure that reads its arguments and returns its result.
 
 use proc_macro2::TokenStream;
+use syn::ext::IdentExt;
 use quote::{format_ident, quote};
 use syn::{FnArg, Pat, ReturnType, Signature, Type};
 
@@ -74,7 +75,7 @@ pub fn read(sig: &Signature) -> syn::Result<(Receiver, Sig)> {
                         "take an owned value (`String`, not `&str`): a script's value is read before the call",
                     ));
                 }
-                params.push(Param { name: ident.ident.to_string(), ty: (*pat.ty).clone() });
+                params.push(Param { name: ident.ident.unraw().to_string(), ty: (*pat.ty).clone() });
             }
         }
     }
