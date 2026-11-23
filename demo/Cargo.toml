@@ -1,0 +1,18 @@
+[package]
+name = "mlua-ir-demo"
+description = "Every scenario of the DX, as working modules"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+mlua-ir.workspace = true
+mlua-ir-gen.workspace = true
+mlua.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+futures.workspace = true
+bollard-stubs.workspace = true
+

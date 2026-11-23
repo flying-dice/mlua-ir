@@ -1,0 +1,14 @@
+{
+  "description": "Luau and TypeScript declarations of the mlua-ir demo runtime, generated from its schema",
+  "files": [
+    "index.d.ts",
+    "types.d.luau",
+    "schema.json"
+  ],
+  "name": "mlua-types",
+  "peerDependencies": {
+    "@typescript-to-lua/language-extensions": "*"
+  },
+  "types": "index.d.ts",
+  "version": "0.1.0"
+}

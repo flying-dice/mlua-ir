@@ -1,0 +1,6883 @@
+{
+  "version": "0.1.0",
+  "modules": [
+    {
+      "name": "globals",
+      "kind": "globals",
+      "doc": null,
+      "functions": [
+        {
+          "name": "uptime",
+          "doc": "Seconds since the runtime started.\n\n```luau\nassert(uptime() >= 0)\n```",
+          "params": [],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "number"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [
+        {
+          "name": "VOS_VERSION",
+          "doc": "The runtime's version.",
+          "ty": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "MAX_ARGS",
+          "doc": "The most arguments a single call takes.",
+          "ty": {
+            "kind": "integer",
+            "min": 0,
+            "max": 4294967295
+          }
+        }
+      ],
+      "objects": []
+    },
+    {
+      "name": "lib:json",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "decode",
+          "doc": "Parse JSON text. The result is `unknown`: check what it is before using it.\n\n```luau\nlocal value, err = json.decode(\"{\\\"n\\\": 1}\")\nassert(err == nil)\nif type(value) == \"table\" then\n    local object = value :: { [string]: unknown } -- checked above: it is a table\n    assert(object.n == 1)\nend\n```",
+          "params": [
+            {
+              "name": "text",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "unknown",
+              "reason": "whatever JSON text was parsed: its shape is the text's, not this API's"
+            },
+            "err": {
+              "kind": "named",
+              "name": "lib_json_JsonError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "encode",
+          "doc": "Write plain data as JSON text.",
+          "params": [
+            {
+              "name": "value",
+              "ty": {
+                "kind": "unknown",
+                "reason": "any plain data a script built: tables, strings, numbers, booleans"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:collections",
+      "kind": "require",
+      "doc": null,
+      "functions": [],
+      "constants": [],
+      "objects": [
+        {
+          "name": "Counter",
+          "type_name": "std_collections_Counter"
+        }
+      ]
+    },
+    {
+      "name": "std:dir",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "list",
+          "doc": "The paths under `path` in the demo's fixed tree, sorted.\n\n```luau\nassert(#dir.list(\"src\") == 1)\nassert(#dir.list(\"src\", { recursive = true }) == 3)\nassert(#dir.list(\"src\", { recursive = true, hidden = true, max_depth = 2 }) == 3)\n```",
+          "params": [
+            {
+              "name": "path",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            },
+            {
+              "name": "opts",
+              "ty": {
+                "kind": "named",
+                "name": "std_dir_ListOptions"
+              },
+              "optional": true
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "list",
+              "item": {
+                "kind": "string"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:draw",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "area",
+          "doc": "The area of a figure.\n\n```luau\nassert(draw.area({ kind = \"rect\", w = 2, h = 3 }) == 6)\n```",
+          "params": [
+            {
+              "name": "figure",
+              "ty": {
+                "kind": "named",
+                "name": "std_draw_Figure"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "number"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:env",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "var",
+          "doc": "The value of a variable in the demo's fixed environment, or `nil` when it is not set. Not being set is\nnormal absence, not an error.\n\n```luau\nassert(env.var(\"HOME\") == \"/home/demo\")\nassert(env.var(\"NOPE\") == nil)\n```",
+          "params": [
+            {
+              "name": "name",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "var_or",
+          "doc": "`var(name)`, or `fallback` (default `\"\"`) when it is not set.",
+          "params": [
+            {
+              "name": "name",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            },
+            {
+              "name": "fallback",
+              "ty": {
+                "kind": "optional",
+                "inner": {
+                  "kind": "string"
+                }
+              },
+              "optional": true
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:events",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "count_to",
+          "doc": "Ticks `1..=n`, one per millisecond.\n\n```luau\nlocal seen = 0\nfor tick in events.count_to(3):items() do\n    seen += tick.n\nend\nassert(seen == 6)\n```",
+          "params": [
+            {
+              "name": "n",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "stream",
+              "item": {
+                "kind": "named",
+                "name": "std_events_Tick"
+              },
+              "error": {
+                "kind": "named",
+                "name": "std_events_EventsError"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "failing",
+          "doc": "Ticks that stop with an error after `after` of them.",
+          "params": [
+            {
+              "name": "after",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "stream",
+              "item": {
+                "kind": "named",
+                "name": "std_events_Tick"
+              },
+              "error": {
+                "kind": "named",
+                "name": "std_events_EventsError"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:fs",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "read",
+          "doc": "The text of a file in the demo's fixed filesystem.\n\n```luau\nlocal text, err = fs.read(\"notes.txt\")\nassert(err == nil and text == \"hello\")\nlocal missing, why = fs.read(\"nope.txt\")\nassert(missing == nil and why ~= nil and why.kind == \"not_found\")\n```",
+          "params": [
+            {
+              "name": "path",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "string"
+            },
+            "err": {
+              "kind": "named",
+              "name": "std_fs_FsError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "remove",
+          "doc": "Remove a file: `true`, or the error.",
+          "params": [
+            {
+              "name": "path",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "boolean"
+            },
+            "err": {
+              "kind": "named",
+              "name": "std_fs_FsError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:geo",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "midpoint",
+          "doc": "The point halfway between `a` and `b`. It carries no label.\n\n```luau\nlocal m = geo.midpoint({ x = 0, y = 0 }, { x = 4, y = 2 })\nassert(m.x == 2 and m.y == 1 and m.label == nil)\n```",
+          "params": [
+            {
+              "name": "a",
+              "ty": {
+                "kind": "named",
+                "name": "std_geo_Point"
+              },
+              "optional": false
+            },
+            {
+              "name": "b",
+              "ty": {
+                "kind": "named",
+                "name": "std_geo_Point"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "named",
+              "name": "std_geo_Point"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "distance",
+          "doc": "The distance between two points.",
+          "params": [
+            {
+              "name": "a",
+              "ty": {
+                "kind": "named",
+                "name": "std_geo_Point"
+              },
+              "optional": false
+            },
+            {
+              "name": "b",
+              "ty": {
+                "kind": "named",
+                "name": "std_geo_Point"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "number"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:labels",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "parse",
+          "doc": "`\"key=value\"` lines as a map.\n\n```luau\nlocal map = assert(labels.parse({ \"app=web\", \"tier=front\" }))\nassert(map.app == \"web\")\n```",
+          "params": [
+            {
+              "name": "lines",
+              "ty": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "map",
+              "key": {
+                "kind": "string"
+              },
+              "value": {
+                "kind": "string"
+              }
+            },
+            "err": {
+              "kind": "named",
+              "name": "std_labels_LabelError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "keys",
+          "doc": "The keys of a map, sorted.",
+          "params": [
+            {
+              "name": "labels",
+              "ty": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "list",
+              "item": {
+                "kind": "string"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "summary",
+          "doc": "The first key (if any) and how many there are.",
+          "params": [
+            {
+              "name": "labels",
+              "ty": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "many",
+            "tys": [
+              {
+                "kind": "optional",
+                "inner": {
+                  "kind": "string"
+                }
+              },
+              {
+                "kind": "integer",
+                "min": 0,
+                "max": 18446744073709551615
+              }
+            ]
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:log",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "write",
+          "doc": "Write one line to the host's log; returns the line as written.\n\n```luau\nassert(log.write(\"warn\", \"disk nearly full\") == \"[warn] disk nearly full\")\n```",
+          "params": [
+            {
+              "name": "level",
+              "ty": {
+                "kind": "named",
+                "name": "std_log_Level"
+              },
+              "optional": false
+            },
+            {
+              "name": "message",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:math2",
+      "kind": "require",
+      "doc": null,
+      "functions": [],
+      "constants": [
+        {
+          "name": "TAU",
+          "doc": "One full turn in radians.",
+          "ty": {
+            "kind": "number"
+          }
+        }
+      ],
+      "objects": []
+    },
+    {
+      "name": "std:names",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "describe",
+          "doc": "How a container is shown.\n\n```luau\nassert(names.describe(\"web-1\") == \"container web-1\")\n```",
+          "params": [
+            {
+              "name": "name",
+              "ty": {
+                "kind": "named",
+                "name": "std_names_ContainerName"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:parse",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "number",
+          "doc": "The number `text` spells. This module's convention is to raise: a failure is a `ParseError`, raised.",
+          "params": [
+            {
+              "name": "text",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "number"
+            }
+          },
+          "raises": {
+            "kind": "named",
+            "name": "std_parse_ParseError"
+          },
+          "is_async": false
+        },
+        {
+          "name": "error_of",
+          "doc": "The `ParseError` a call of this module raised, read back from what `pcall` caught; `nil` for anything else.\n\n```luau\nlocal ok, caught = pcall(parse.number, \"x\")\nassert(not ok)\nlocal err = parse.error_of(caught)\nassert(err ~= nil and err.kind == \"not_a_number\")\n```",
+          "params": [
+            {
+              "name": "caught",
+              "ty": {
+                "kind": "unknown",
+                "reason": "whatever `pcall` caught: any value can be raised"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "std_parse_ParseError"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:sort",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "sort_by",
+          "doc": "`items` in the order `before` says: `before(left, right)` is `true` when `left` goes first. An error\n`before` raises passes through.\n\n```luau\nlocal sorted = sort.sort_by({ \"pear\", \"fig\", \"apple\" }, function(left, right)\n    return #left < #right\nend)\nassert(sorted[1] == \"fig\" and sorted[3] == \"apple\")\n```",
+          "params": [
+            {
+              "name": "items",
+              "ty": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              },
+              "optional": false
+            },
+            {
+              "name": "before",
+              "ty": {
+                "kind": "function",
+                "params": [
+                  {
+                    "name": "left",
+                    "ty": {
+                      "kind": "string"
+                    },
+                    "optional": false
+                  },
+                  {
+                    "name": "right",
+                    "ty": {
+                      "kind": "string"
+                    },
+                    "optional": false
+                  }
+                ],
+                "returns": {
+                  "kind": "one",
+                  "ty": {
+                    "kind": "boolean"
+                  }
+                }
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "list",
+              "item": {
+                "kind": "string"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "each",
+          "doc": "Calls `visit(item, index)` for each item, in order; how many it visited.",
+          "params": [
+            {
+              "name": "items",
+              "ty": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              },
+              "optional": false
+            },
+            {
+              "name": "visit",
+              "ty": {
+                "kind": "function",
+                "params": [
+                  {
+                    "name": "item",
+                    "ty": {
+                      "kind": "string"
+                    },
+                    "optional": false
+                  },
+                  {
+                    "name": "index",
+                    "ty": {
+                      "kind": "integer",
+                      "min": 0,
+                      "max": 4294967295
+                    },
+                    "optional": false
+                  }
+                ],
+                "returns": {
+                  "kind": "none"
+                }
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 4294967295
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:task",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "sleep",
+          "doc": "Wait `ms` milliseconds without blocking other scripts; returns how long it waited.\n\n```luau\nassert(task.sleep(1) == 1)\n```",
+          "params": [
+            {
+              "name": "ms",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 4294967295
+            }
+          },
+          "raises": null,
+          "is_async": true
+        }
+      ],
+      "constants": [],
+      "objects": [
+        {
+          "name": "Clock",
+          "type_name": "std_task_Clock"
+        }
+      ]
+    },
+    {
+      "name": "std:text",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "pad",
+          "doc": "Pad `text` on the right with spaces to `width` characters.\n\n```luau\nassert(text.pad(\"id\", 6) == \"id    \")\n```",
+          "params": [
+            {
+              "name": "text",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            },
+            {
+              "name": "width",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "std:time",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "describe",
+          "doc": "How a timeout reads to a person.\n\n```luau\nassert(time.describe(1.5) == \"1.5s\")\nassert(time.describe(time.Duration.seconds(2)) == \"2s\")\n```",
+          "params": [
+            {
+              "name": "timeout",
+              "ty": {
+                "kind": "named",
+                "name": "std_time_Timeout"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": [
+        {
+          "name": "Duration",
+          "type_name": "std_time_Duration"
+        }
+      ]
+    },
+    {
+      "name": "vnd:bollard",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "connect",
+          "doc": "Connect to a daemon. Sends nothing: the first call does.\n\n```luau\nlocal docker = assert(bollard.connect())\nfor _, c in assert(docker:list_containers({ all = true })) do\n    assert(c.Names ~= nil)\nend\n```",
+          "params": [
+            {
+              "name": "opts",
+              "ty": {
+                "kind": "named",
+                "name": "vnd_bollard_ConnectOptions"
+              },
+              "optional": true
+            }
+          ],
+          "returns": {
+            "kind": "fallible",
+            "ok": {
+              "kind": "named",
+              "name": "vnd_bollard_Client"
+            },
+            "err": {
+              "kind": "named",
+              "name": "vnd_bollard_DockerError"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    },
+    {
+      "name": "vnd:docker_models",
+      "kind": "require",
+      "doc": null,
+      "functions": [
+        {
+          "name": "sample",
+          "doc": "Two containers as Docker reports them: bollard's own `ContainerSummary`, typed field by field.\n\n```luau\nlocal containers = docker_models.sample()\nassert(containers[1].State == \"running\")\n```",
+          "params": [],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "list",
+              "item": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummary"
+              }
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
+          "name": "line",
+          "doc": "One line for a container: its first name and its state. Takes bollard's type as an argument too.",
+          "params": [
+            {
+              "name": "container",
+              "ty": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummary"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "string"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        }
+      ],
+      "constants": [],
+      "objects": []
+    }
+  ],
+  "types": [
+    {
+      "name": "lib_json_JsonError",
+      "short_name": "JsonError",
+      "module": "lib:json",
+      "rust": "mlua_ir_demo::s17_genuinely_unknown::json::JsonError",
+      "doc": "Why `decode` refused its text.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "syntax",
+            "doc": "The text is not JSON.",
+            "fields": [
+              {
+                "name": "line",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              },
+              {
+                "name": "column",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_collections_Counter",
+      "short_name": "Counter",
+      "module": "std:collections",
+      "rust": "mlua_ir_demo::s10_userdata_object::collections::Counter",
+      "doc": "A counter. Clones share one value.",
+      "body": {
+        "kind": "object",
+        "fields": [
+          {
+            "name": "value",
+            "doc": "The current value.",
+            "ty": {
+              "kind": "integer",
+              "min": -9223372036854775808,
+              "max": 9223372036854775807
+            },
+            "default": null,
+            "readonly": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "increment",
+            "doc": "Add one; the new value.",
+            "params": [],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "raises": null,
+            "is_async": false
+          },
+          {
+            "name": "add",
+            "doc": "Add `n`; the new value.",
+            "params": [
+              {
+                "name": "n",
+                "ty": {
+                  "kind": "integer",
+                  "min": -9223372036854775808,
+                  "max": 9223372036854775807
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "raises": null,
+            "is_async": false
+          },
+          {
+            "name": "set",
+            "doc": "Set the value to `n`.",
+            "params": [
+              {
+                "name": "n",
+                "ty": {
+                  "kind": "integer",
+                  "min": -9223372036854775808,
+                  "max": 9223372036854775807
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "none"
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ],
+        "statics": [
+          {
+            "name": "new",
+            "doc": "A counter starting at `initial` (default 0).\n\n```luau\nlocal c = collections.Counter.new(41)\nassert(c:increment() == 42 and c.value == 42)\n```",
+            "params": [
+              {
+                "name": "initial",
+                "ty": {
+                  "kind": "optional",
+                  "inner": {
+                    "kind": "integer",
+                    "min": -9223372036854775808,
+                    "max": 9223372036854775807
+                  }
+                },
+                "optional": true
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "named",
+                "name": "std_collections_Counter"
+              }
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_dir_ListOptions",
+      "short_name": "ListOptions",
+      "module": "std:dir",
+      "rust": "mlua_ir_demo::s04_options_table::dir::ListOptions",
+      "doc": "How `list` walks a directory.",
+      "body": {
+        "kind": "options",
+        "fields": [
+          {
+            "name": "recursive",
+            "doc": "Go into subdirectories too.",
+            "ty": {
+              "kind": "boolean"
+            },
+            "default": false,
+            "readonly": false
+          },
+          {
+            "name": "hidden",
+            "doc": "Include names that start with `.`.",
+            "ty": {
+              "kind": "boolean"
+            },
+            "default": false,
+            "readonly": false
+          },
+          {
+            "name": "max_depth",
+            "doc": "How deep `recursive` goes; unlimited when not given.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_draw_Figure",
+      "short_name": "Figure",
+      "module": "std:draw",
+      "rust": "mlua_ir_demo::s05_string_enums_and_unions::draw::Figure",
+      "doc": "A figure to measure.",
+      "body": {
+        "kind": "tagged_union",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "circle",
+            "doc": "A circle of radius `r`.",
+            "fields": [
+              {
+                "name": "r",
+                "doc": null,
+                "ty": {
+                  "kind": "number"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "rect",
+            "doc": "A `w` by `h` rectangle.",
+            "fields": [
+              {
+                "name": "w",
+                "doc": null,
+                "ty": {
+                  "kind": "number"
+                },
+                "default": null,
+                "readonly": false
+              },
+              {
+                "name": "h",
+                "doc": null,
+                "ty": {
+                  "kind": "number"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_events_EventsError",
+      "short_name": "EventsError",
+      "module": "std:events",
+      "rust": "mlua_ir_demo::s13_streams::events::EventsError",
+      "doc": "Why a stream stopped early.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "interrupted",
+            "doc": "The source stopped before the end.",
+            "fields": [
+              {
+                "name": "after",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_events_Tick",
+      "short_name": "Tick",
+      "module": "std:events",
+      "rust": "mlua_ir_demo::s13_streams::events::Tick",
+      "doc": "One tick of a stream.",
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "n",
+            "doc": "Which tick, from 1.",
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 4294967295
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "last",
+            "doc": "`true` for the last one.",
+            "ty": {
+              "kind": "boolean"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_fs_FsError",
+      "short_name": "FsError",
+      "module": "std:fs",
+      "rust": "mlua_ir_demo::s08_returned_errors::fs::FsError",
+      "doc": "Why a file operation failed.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "not_found",
+            "doc": "There is no file at `path`.",
+            "fields": [
+              {
+                "name": "path",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "permission_denied",
+            "doc": "The file exists but this script may not read it.",
+            "fields": [
+              {
+                "name": "path",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "too_large",
+            "doc": "The file is larger than `limit` bytes.",
+            "fields": [
+              {
+                "name": "path",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              },
+              {
+                "name": "limit",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_geo_Point",
+      "short_name": "Point",
+      "module": "std:geo",
+      "rust": "mlua_ir_demo::s03_typed_table::geo::Point",
+      "doc": "A point on the plane.",
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "x",
+            "doc": "Distance along the horizontal axis.",
+            "ty": {
+              "kind": "number"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "y",
+            "doc": "Distance along the vertical axis.",
+            "ty": {
+              "kind": "number"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "label",
+            "doc": "A name to show beside it.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_labels_LabelError",
+      "short_name": "LabelError",
+      "module": "std:labels",
+      "rust": "mlua_ir_demo::s06_lists_maps_tuples::labels::LabelError",
+      "doc": "Why `parse` refused its lines.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "no_equals",
+            "doc": "A line without `=`.",
+            "fields": [
+              {
+                "name": "line",
+                "doc": null,
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "default": null,
+                "readonly": false
+              },
+              {
+                "name": "text",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_log_Level",
+      "short_name": "Level",
+      "module": "std:log",
+      "rust": "mlua_ir_demo::s05_string_enums_and_unions::log::Level",
+      "doc": "How serious a line is.",
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "debug",
+            "doc": "Detail for whoever debugs it."
+          },
+          {
+            "value": "info",
+            "doc": "Normal operation."
+          },
+          {
+            "value": "warn",
+            "doc": "Something to look at."
+          },
+          {
+            "value": "error",
+            "doc": "Something failed."
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_names_ContainerName",
+      "short_name": "ContainerName",
+      "module": "std:names",
+      "rust": "mlua_ir_demo::s15_validated_text::names::ContainerName",
+      "doc": "The name or id of a container: letters, digits and `_.-`, starting with a letter or digit.",
+      "body": {
+        "kind": "alias",
+        "ty": {
+          "kind": "string"
+        }
+      }
+    },
+    {
+      "name": "std_parse_ParseError",
+      "short_name": "ParseError",
+      "module": "std:parse",
+      "rust": "mlua_ir_demo::s09_raised_errors::parse::ParseError",
+      "doc": "Why `number` refused its text.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "empty",
+            "doc": "The text is empty.",
+            "fields": []
+          },
+          {
+            "tag_value": "not_a_number",
+            "doc": "The text is not a number.",
+            "fields": [
+              {
+                "name": "text",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_task_Clock",
+      "short_name": "Clock",
+      "module": "std:task",
+      "rust": "mlua_ir_demo::s12_async::task::Clock",
+      "doc": "A clock that ticks once per `wait`.",
+      "body": {
+        "kind": "object",
+        "fields": [],
+        "methods": [
+          {
+            "name": "wait",
+            "doc": "Wait `ms` milliseconds, then tick; the number of ticks so far.\n\n```luau\nlocal clock = task.Clock.new()\nclock:wait(1)\nassert(clock:wait(1) == 2)\n```",
+            "params": [
+              {
+                "name": "ms",
+                "ty": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 4294967295
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              }
+            },
+            "raises": null,
+            "is_async": true
+          }
+        ],
+        "statics": [
+          {
+            "name": "new",
+            "doc": "A clock at zero.",
+            "params": [],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "named",
+                "name": "std_task_Clock"
+              }
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_time_Duration",
+      "short_name": "Duration",
+      "module": "std:time",
+      "rust": "mlua_ir_demo::s11_userdata_as_argument::time::Duration",
+      "doc": "A length of time.",
+      "body": {
+        "kind": "object",
+        "fields": [
+          {
+            "name": "as_seconds",
+            "doc": "The length in seconds.",
+            "ty": {
+              "kind": "number"
+            },
+            "default": null,
+            "readonly": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "plus",
+            "doc": "This and `other` together.\n\n```luau\nlocal d = time.Duration.seconds(1):plus(time.Duration.seconds(0.5))\nassert(d.as_seconds == 1.5)\n```",
+            "params": [
+              {
+                "name": "other",
+                "ty": {
+                  "kind": "named",
+                  "name": "std_time_Duration"
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "named",
+                "name": "std_time_Duration"
+              }
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ],
+        "statics": [
+          {
+            "name": "seconds",
+            "doc": "`n` seconds.",
+            "params": [
+              {
+                "name": "n",
+                "ty": {
+                  "kind": "number"
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "named",
+                "name": "std_time_Duration"
+              }
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_time_Timeout",
+      "short_name": "Timeout",
+      "module": "std:time",
+      "rust": "mlua_ir_demo::s11_userdata_as_argument::time::Timeout",
+      "doc": "A timeout: a `Duration`, or a number of seconds.",
+      "body": {
+        "kind": "alias",
+        "ty": {
+          "kind": "union",
+          "members": [
+            {
+              "kind": "named",
+              "name": "std_time_Duration"
+            },
+            {
+              "kind": "number"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "vnd_bollard_Client",
+      "short_name": "Client",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::Client",
+      "doc": "A client for one daemon.",
+      "body": {
+        "kind": "object",
+        "fields": [
+          {
+            "name": "host",
+            "doc": "The daemon this client talks to.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": true
+          }
+        ],
+        "methods": [
+          {
+            "name": "list_containers",
+            "doc": "The containers, as Docker's summaries. Only running ones unless `all`.",
+            "params": [
+              {
+                "name": "opts",
+                "ty": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ListContainers"
+                },
+                "optional": true
+              }
+            ],
+            "returns": {
+              "kind": "fallible",
+              "ok": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ContainerSummary"
+                }
+              },
+              "err": {
+                "kind": "named",
+                "name": "vnd_bollard_DockerError"
+              }
+            },
+            "raises": null,
+            "is_async": true
+          },
+          {
+            "name": "find_container",
+            "doc": "One container's summary, or `nil` when there is none: absence is not an error.",
+            "params": [
+              {
+                "name": "name",
+                "ty": {
+                  "kind": "named",
+                  "name": "std_names_ContainerName"
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "fallible",
+              "ok": {
+                "kind": "optional",
+                "inner": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ContainerSummary"
+                }
+              },
+              "err": {
+                "kind": "named",
+                "name": "vnd_bollard_DockerError"
+              }
+            },
+            "raises": null,
+            "is_async": true
+          },
+          {
+            "name": "create_container",
+            "doc": "Create a container from Docker's own create body (`Image`, `Labels`, `Env`, `HostConfig`, ...): its id.\n\n```luau\nlocal docker = assert(bollard.connect())\nlocal id = assert(docker:create_container(\"api\", { Image = \"nginx:1.27\", Labels = { app = \"api\" } }))\nassert(docker:find_container(\"api\") ~= nil and #id > 0)\n```",
+            "params": [
+              {
+                "name": "name",
+                "ty": {
+                  "kind": "named",
+                  "name": "std_names_ContainerName"
+                },
+                "optional": false
+              },
+              {
+                "name": "body",
+                "ty": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ContainerCreateBody"
+                },
+                "optional": false
+              }
+            ],
+            "returns": {
+              "kind": "fallible",
+              "ok": {
+                "kind": "string"
+              },
+              "err": {
+                "kind": "named",
+                "name": "vnd_bollard_DockerError"
+              }
+            },
+            "raises": null,
+            "is_async": true
+          },
+          {
+            "name": "logs",
+            "doc": "A container's output as a stream; a container that does not exist is the stream's error.",
+            "params": [
+              {
+                "name": "name",
+                "ty": {
+                  "kind": "named",
+                  "name": "std_names_ContainerName"
+                },
+                "optional": false
+              },
+              {
+                "name": "opts",
+                "ty": {
+                  "kind": "named",
+                  "name": "vnd_bollard_Logs"
+                },
+                "optional": true
+              }
+            ],
+            "returns": {
+              "kind": "one",
+              "ty": {
+                "kind": "stream",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_LogPiece"
+                },
+                "error": {
+                  "kind": "named",
+                  "name": "vnd_bollard_DockerError"
+                }
+              }
+            },
+            "raises": null,
+            "is_async": false
+          }
+        ],
+        "statics": []
+      }
+    },
+    {
+      "name": "vnd_bollard_ConnectOptions",
+      "short_name": "ConnectOptions",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::ConnectOptions",
+      "doc": "How to reach a daemon.",
+      "body": {
+        "kind": "options",
+        "fields": [
+          {
+            "name": "host",
+            "doc": "`unix:///var/run/docker.sock` or `tcp://host:2375`; the local socket when not given.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "timeout",
+            "doc": "Seconds a call waits for the daemon.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "tls",
+            "doc": "Client certificates for a TLS daemon.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_Tls"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerCreateBody",
+      "short_name": "ContainerCreateBody",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Hostname",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Domainname",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "User",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStdin",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStdout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStderr",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExposedPorts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "nil"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Tty",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OpenStdin",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StdinOnce",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Env",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Cmd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Healthcheck",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_HealthConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ArgsEscaped",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Image",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Volumes",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "nil"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "WorkingDir",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Entrypoint",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkDisabled",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OnBuild",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StopSignal",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StopTimeout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Shell",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_HostConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkingConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_NetworkingConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummary",
+      "short_name": "ContainerSummary",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Id",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Names",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Image",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageManifestDescriptor",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_OciDescriptor"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Command",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Created",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Ports",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_PortSummary"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRw",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRootFs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "State",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_ContainerSummaryStateEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_ContainerSummaryHostConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkSettings",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_ContainerSummaryNetworkSettings"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mounts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_MountPoint"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Health",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_ContainerSummaryHealth"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummaryHealth",
+      "short_name": "ContainerSummaryHealth",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_ContainerSummaryHealthStatusEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "FailingStreak",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummaryHealthStatusEnum",
+      "short_name": "ContainerSummaryHealthStatusEnum",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "none",
+            "doc": null
+          },
+          {
+            "value": "starting",
+            "doc": null
+          },
+          {
+            "value": "healthy",
+            "doc": null
+          },
+          {
+            "value": "unhealthy",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummaryHostConfig",
+      "short_name": "ContainerSummaryHostConfig",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "NetworkMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummaryNetworkSettings",
+      "short_name": "ContainerSummaryNetworkSettings",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Networks",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "named",
+                  "name": "vnd_bollard_EndpointSettings"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ContainerSummaryStateEnum",
+      "short_name": "ContainerSummaryStateEnum",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "created",
+            "doc": null
+          },
+          {
+            "value": "running",
+            "doc": null
+          },
+          {
+            "value": "paused",
+            "doc": null
+          },
+          {
+            "value": "restarting",
+            "doc": null
+          },
+          {
+            "value": "exited",
+            "doc": null
+          },
+          {
+            "value": "removing",
+            "doc": null
+          },
+          {
+            "value": "dead",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_DeviceMapping",
+      "short_name": "DeviceMapping",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "PathOnHost",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PathInContainer",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupPermissions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_DeviceRequest",
+      "short_name": "DeviceRequest",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Driver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Count",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceIDs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Capabilities",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "list",
+                  "item": {
+                    "kind": "string"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_DockerError",
+      "short_name": "DockerError",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::DockerError",
+      "doc": "Why a Docker call failed.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "connect",
+            "doc": "No daemon answered at `host`.",
+            "fields": [
+              {
+                "name": "host",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "not_found",
+            "doc": "There is no such container.",
+            "fields": [
+              {
+                "name": "name",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          },
+          {
+            "tag_value": "conflict",
+            "doc": "The container's state does not allow it (a name in use, a running container).",
+            "fields": [
+              {
+                "name": "reason",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_EndpointIpamConfig",
+      "short_name": "EndpointIpamConfig",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IPv4Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPv6Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "LinkLocalIPs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_EndpointSettings",
+      "short_name": "EndpointSettings",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IPAMConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_EndpointIpamConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Links",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MacAddress",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Aliases",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DriverOpts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GwPriority",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "EndpointID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Gateway",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPAddress",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPPrefixLen",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPv6Gateway",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GlobalIPv6Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GlobalIPv6PrefixLen",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DNSNames",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_HealthConfig",
+      "short_name": "HealthConfig",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Test",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Interval",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Timeout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Retries",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StartPeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StartInterval",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_HostConfig",
+      "short_name": "HostConfig",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "CpuShares",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Memory",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupParent",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioWeight",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 65535
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioWeightDevice",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ResourcesBlkioWeightDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceReadBps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceWriteBps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceReadIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceWriteIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuPeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuQuota",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuRealtimePeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuRealtimeRuntime",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpusetCpus",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpusetMems",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Devices",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_DeviceMapping"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceCgroupRules",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceRequests",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_DeviceRequest"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemoryReservation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemorySwap",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemorySwappiness",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NanoCpus",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OomKillDisable",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Init",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PidsLimit",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Ulimits",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_ResourcesUlimits"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuCount",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuPercent",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IOMaximumIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IOMaximumBandwidth",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Binds",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ContainerIDFile",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "LogConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_HostConfigLogConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PortBindings",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "optional",
+                  "inner": {
+                    "kind": "list",
+                    "item": {
+                      "kind": "named",
+                      "name": "vnd_bollard_PortBinding"
+                    }
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "RestartPolicy",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_RestartPolicy"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AutoRemove",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumeDriver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumesFrom",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mounts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_bollard_Mount"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ConsoleSize",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 9007199254740992
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CapAdd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CapDrop",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupnsMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_HostConfigCgroupnsModeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Dns",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DnsOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DnsSearch",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExtraHosts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GroupAdd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IpcMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Cgroup",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Links",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OomScoreAdj",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PidMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Privileged",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PublishAllPorts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadonlyRootfs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SecurityOpt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StorageOpt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Tmpfs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "UTSMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "UsernsMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ShmSize",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Sysctls",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Runtime",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Isolation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_HostConfigIsolationEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MaskedPaths",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadonlyPaths",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_HostConfigCgroupnsModeEnum",
+      "short_name": "HostConfigCgroupnsModeEnum",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "private",
+            "doc": null
+          },
+          {
+            "value": "host",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_HostConfigIsolationEnum",
+      "short_name": "HostConfigIsolationEnum",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "default",
+            "doc": null
+          },
+          {
+            "value": "process",
+            "doc": null
+          },
+          {
+            "value": "hyperv",
+            "doc": null
+          },
+          {
+            "value": "",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_HostConfigLogConfig",
+      "short_name": "HostConfigLogConfig",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Config",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ListContainers",
+      "short_name": "ListContainers",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::ListContainers",
+      "doc": "Options of `list_containers`.",
+      "body": {
+        "kind": "options",
+        "fields": [
+          {
+            "name": "all",
+            "doc": "Stopped containers too.",
+            "ty": {
+              "kind": "boolean"
+            },
+            "default": false,
+            "readonly": false
+          },
+          {
+            "name": "limit",
+            "doc": "At most this many.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_LogPiece",
+      "short_name": "LogPiece",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::LogPiece",
+      "doc": "A piece of a container's output.",
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "stream",
+            "doc": "Which output it came from.",
+            "ty": {
+              "kind": "named",
+              "name": "vnd_bollard_Output"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "data",
+            "doc": "What was written.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_Logs",
+      "short_name": "Logs",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::Logs",
+      "doc": "Options of `logs`.",
+      "body": {
+        "kind": "options",
+        "fields": [
+          {
+            "name": "tail",
+            "doc": "Start this many lines from the end.",
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 4294967295
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_Mount",
+      "short_name": "Mount",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Target",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Source",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountTypeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnly",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Consistency",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BindOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountBindOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumeOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountVolumeOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountImageOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "TmpfsOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountTmpfsOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountBindOptions",
+      "short_name": "MountBindOptions",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Propagation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountBindOptionsPropagationEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NonRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CreateMountpoint",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnlyNonRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnlyForceRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountBindOptionsPropagationEnum",
+      "short_name": "MountBindOptionsPropagationEnum",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "private",
+            "doc": null
+          },
+          {
+            "value": "rprivate",
+            "doc": null
+          },
+          {
+            "value": "shared",
+            "doc": null
+          },
+          {
+            "value": "rshared",
+            "doc": null
+          },
+          {
+            "value": "slave",
+            "doc": null
+          },
+          {
+            "value": "rslave",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountImageOptions",
+      "short_name": "MountImageOptions",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Subpath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountPoint",
+      "short_name": "MountPoint",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountPointTypeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Source",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Destination",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Driver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "RW",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Propagation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountPointTypeEnum",
+      "short_name": "MountPointTypeEnum",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "bind",
+            "doc": null
+          },
+          {
+            "value": "volume",
+            "doc": null
+          },
+          {
+            "value": "image",
+            "doc": null
+          },
+          {
+            "value": "tmpfs",
+            "doc": null
+          },
+          {
+            "value": "npipe",
+            "doc": null
+          },
+          {
+            "value": "cluster",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountTmpfsOptions",
+      "short_name": "MountTmpfsOptions",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "SizeBytes",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "list",
+                  "item": {
+                    "kind": "string"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountTypeEnum",
+      "short_name": "MountTypeEnum",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "bind",
+            "doc": null
+          },
+          {
+            "value": "volume",
+            "doc": null
+          },
+          {
+            "value": "image",
+            "doc": null
+          },
+          {
+            "value": "tmpfs",
+            "doc": null
+          },
+          {
+            "value": "npipe",
+            "doc": null
+          },
+          {
+            "value": "cluster",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountVolumeOptions",
+      "short_name": "MountVolumeOptions",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "NoCopy",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DriverConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_MountVolumeOptionsDriverConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Subpath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_MountVolumeOptionsDriverConfig",
+      "short_name": "MountVolumeOptionsDriverConfig",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_NetworkingConfig",
+      "short_name": "NetworkingConfig",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "EndpointsConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "named",
+                  "name": "vnd_bollard_EndpointSettings"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_OciDescriptor",
+      "short_name": "OciDescriptor",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "mediaType",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "digest",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "size",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "urls",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "data",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "platform",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_OciPlatform"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "artifactType",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_OciPlatform",
+      "short_name": "OciPlatform",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "architecture",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os.version",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os.features",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "variant",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_Output",
+      "short_name": "Output",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::Output",
+      "doc": "Which output a piece came from.",
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "stdout",
+            "doc": null
+          },
+          {
+            "value": "stderr",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_PortBinding",
+      "short_name": "PortBinding",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "HostIp",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostPort",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_PortSummary",
+      "short_name": "PortSummary",
+      "module": "vnd:bollard",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IP",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PrivatePort",
+            "doc": null,
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 65535
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PublicPort",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 65535
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ResourcesBlkioWeightDevice",
+      "short_name": "ResourcesBlkioWeightDevice",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Path",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Weight",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 9007199254740992
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ResourcesUlimits",
+      "short_name": "ResourcesUlimits",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Soft",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Hard",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_RestartPolicy",
+      "short_name": "RestartPolicy",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_bollard_RestartPolicyNameEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MaximumRetryCount",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_RestartPolicyNameEnum",
+      "short_name": "RestartPolicyNameEnum",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "no",
+            "doc": null
+          },
+          {
+            "value": "always",
+            "doc": null
+          },
+          {
+            "value": "unless-stopped",
+            "doc": null
+          },
+          {
+            "value": "on-failure",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_ThrottleDevice",
+      "short_name": "ThrottleDevice",
+      "module": "vnd:bollard",
+      "rust": "bollard_stubs::models::ContainerCreateBody",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Path",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Rate",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_bollard_Tls",
+      "short_name": "Tls",
+      "module": "vnd:bollard",
+      "rust": "mlua_ir_demo::s18_whole_module_bollard::bollard::Tls",
+      "doc": "The three files of a TLS client: all three or none, which the type says (not a runtime check).",
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "ca",
+            "doc": null,
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "cert",
+            "doc": null,
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "key",
+            "doc": null,
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummary",
+      "short_name": "ContainerSummary",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Id",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Names",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Image",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageManifestDescriptor",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_OciDescriptor"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Command",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Created",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Ports",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_PortSummary"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRw",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRootFs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "State",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummaryStateEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummaryHostConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkSettings",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummaryNetworkSettings"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mounts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_MountPoint"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Health",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummaryHealth"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummaryHealth",
+      "short_name": "ContainerSummaryHealth",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerSummaryHealthStatusEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "FailingStreak",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummaryHealthStatusEnum",
+      "short_name": "ContainerSummaryHealthStatusEnum",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "none",
+            "doc": null
+          },
+          {
+            "value": "starting",
+            "doc": null
+          },
+          {
+            "value": "healthy",
+            "doc": null
+          },
+          {
+            "value": "unhealthy",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummaryHostConfig",
+      "short_name": "ContainerSummaryHostConfig",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "NetworkMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummaryNetworkSettings",
+      "short_name": "ContainerSummaryNetworkSettings",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Networks",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_EndpointSettings"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerSummaryStateEnum",
+      "short_name": "ContainerSummaryStateEnum",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "created",
+            "doc": null
+          },
+          {
+            "value": "running",
+            "doc": null
+          },
+          {
+            "value": "paused",
+            "doc": null
+          },
+          {
+            "value": "restarting",
+            "doc": null
+          },
+          {
+            "value": "exited",
+            "doc": null
+          },
+          {
+            "value": "removing",
+            "doc": null
+          },
+          {
+            "value": "dead",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_EndpointIpamConfig",
+      "short_name": "EndpointIpamConfig",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IPv4Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPv6Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "LinkLocalIPs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_EndpointSettings",
+      "short_name": "EndpointSettings",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IPAMConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_EndpointIpamConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Links",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MacAddress",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Aliases",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DriverOpts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GwPriority",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "EndpointID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Gateway",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPAddress",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPPrefixLen",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IPv6Gateway",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GlobalIPv6Address",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GlobalIPv6PrefixLen",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DNSNames",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountPoint",
+      "short_name": "MountPoint",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountPointTypeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Source",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Destination",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Driver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "RW",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Propagation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountPointTypeEnum",
+      "short_name": "MountPointTypeEnum",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "bind",
+            "doc": null
+          },
+          {
+            "value": "volume",
+            "doc": null
+          },
+          {
+            "value": "image",
+            "doc": null
+          },
+          {
+            "value": "tmpfs",
+            "doc": null
+          },
+          {
+            "value": "npipe",
+            "doc": null
+          },
+          {
+            "value": "cluster",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_OciDescriptor",
+      "short_name": "OciDescriptor",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "mediaType",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "digest",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "size",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "urls",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "data",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "platform",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_OciPlatform"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "artifactType",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_OciPlatform",
+      "short_name": "OciPlatform",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "architecture",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os.version",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "os.features",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "variant",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_PortSummary",
+      "short_name": "PortSummary",
+      "module": "vnd:docker_models",
+      "rust": "alloc::vec::Vec<bollard_stubs::models::ContainerSummary>",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "IP",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PrivatePort",
+            "doc": null,
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 65535
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PublicPort",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 65535
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    }
+  ]
+}

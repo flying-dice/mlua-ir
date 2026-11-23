@@ -1,0 +1,15 @@
+[package]
+name = "mlua-ir-macros"
+description = "The derives and attributes of mlua-ir"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn.workspace = true
+quote.workspace = true
+proc-macro2.workspace = true
+heck.workspace = true

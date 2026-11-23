@@ -1,0 +1,23 @@
+[package]
+name = "mlua-ir"
+description = "Shape reflection for mlua APIs: one intermediate representation of a Lua surface, read from Rust types"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[dependencies]
+mlua.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+inventory.workspace = true
+futures.workspace = true
+serde-reflection.workspace = true
+mlua-ir-macros.workspace = true
+
+[features]
+## mlua's `send`: Lua states, userdata and async futures are `Send`. Turn it on when the host's mlua has it.
+send = ["mlua/send"]
+
+[dev-dependencies]
+serde.workspace = true
+tokio.workspace = true
