@@ -4,6 +4,7 @@ description = "The derives and attributes of mlua-ir"
 edition.workspace = true
 version.workspace = true
 publish.workspace = true
+repository.workspace = true
 
 [lib]
 proc-macro = true

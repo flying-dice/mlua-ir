@@ -4,6 +4,7 @@ description = "Luau and TypeScript declarations from an mlua-ir schema"
 edition.workspace = true
 version.workspace = true
 publish.workspace = true
+repository.workspace = true
 
 [dependencies]
 mlua-ir.workspace = true

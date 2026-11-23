@@ -70,7 +70,7 @@ schemas that flags breaking changes.
 
 ```toml
 [dependencies]
-mlua-ir = { git = "https://github.com/JonathanTurnock/mlua-ir.git" }
+mlua-ir = { git = "https://github.com/flying-dice/mlua-ir.git" }
 ```
 
 Turn on `features = ["send"]` when your mlua has `send`. Luau only, for now.

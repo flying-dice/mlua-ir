@@ -4,6 +4,7 @@ description = "Shape reflection for mlua APIs: one intermediate representation o
 edition.workspace = true
 version.workspace = true
 publish.workspace = true
+repository.workspace = true
 
 [dependencies]
 mlua.workspace = true

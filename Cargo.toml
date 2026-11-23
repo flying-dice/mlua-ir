@@ -6,6 +6,7 @@ members = ["crates/mlua-ir", "crates/mlua-ir-macros", "crates/mlua-ir-gen", "dem
 edition = "2024"
 version = "0.1.0"
 publish = false
+repository = "https://github.com/flying-dice/mlua-ir"
 
 [workspace.dependencies]
 mlua = { version = "0.12.2", features = ["luau", "async", "serialize"] }
