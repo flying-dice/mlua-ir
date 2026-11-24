@@ -26,6 +26,9 @@ echo "== tsc: usage checks, every @ts-expect-error meets an error"
 echo "== tstl: the TypeScript usage compiles to Luau"
 ./node_modules/.bin/tstl -p ts/tsconfig.tstl.json
 
+echo "== every scenario script and doc example runs, one line each"
+cargo test -q -p mlua-ir-demo --test scenarios -- --nocapture --test-threads=1 every_
+
 echo "== cargo test: scripts, doc examples, refusals, the compiled TypeScript, the release diff"
 MLUA_IR_REQUIRE_TS=1 cargo test -q --workspace
 

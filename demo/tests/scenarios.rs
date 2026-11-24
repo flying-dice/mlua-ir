@@ -33,17 +33,37 @@ fn luau_files(dir: &Path) -> Vec<PathBuf> {
     files
 }
 
+/// Runs every `(name, code)`, printing a line each (`cargo test -- --nocapture` shows them: `tools/check.sh` does),
+/// and fails once all have run, with every failure.
+fn run_all(what: &str, scripts: impl IntoIterator<Item = (String, String)>) {
+    let mut failures = Vec::new();
+    for (name, code) in scripts {
+        match run(&name, &code) {
+            Ok(()) => println!("PASS  {what} {name}"),
+            Err(e) => {
+                println!("FAIL  {what} {name}");
+                failures.push(format!("{name} failed:
+{code}
+{e}"));
+            }
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("
+
+"));
+}
+
 #[test]
 fn every_scenario_script_runs() {
     let files = luau_files(&root().join("lua"));
     assert_eq!(files.len(), 19, "one script per scenario 01..19");
-    for file in files {
-        let code = std::fs::read_to_string(&file).expect("the script reads");
-        let name = file.file_name().expect("a name").to_string_lossy().into_owned();
-        if let Err(e) = run(&name, &code) {
-            panic!("{name} failed:\n{e}");
-        }
-    }
+    run_all(
+        "scenario",
+        files.iter().map(|file| {
+            let code = std::fs::read_to_string(file).expect("the script reads");
+            (file.file_name().expect("a name").to_string_lossy().into_owned(), code)
+        }),
+    );
 }
 
 #[test]
@@ -51,11 +71,7 @@ fn every_doc_example_runs() {
     let ir = mlua_ir_demo::schema();
     let examples = examples(&ir);
     assert!(examples.len() >= 20, "the docs carry their examples");
-    for example in examples {
-        if let Err(e) = run(&example.source, &example.code) {
-            panic!("the example of {} failed:\n{}\n{e}", example.source, example.code);
-        }
-    }
+    run_all("example ", examples.into_iter().map(|e| (e.source, e.code)));
 }
 
 /// What a script that is not type-checked (or that lies to the checker) is told at run time.

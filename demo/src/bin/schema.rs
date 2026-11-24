@@ -71,7 +71,9 @@ fn main() -> ExitCode {
     let check = args.iter().any(|a| a == "--check");
     let root = root();
     let mut stale = Vec::new();
-    for (path, text) in outputs(&ir) {
+    let outputs = outputs(&ir);
+    let count = outputs.len();
+    for (path, text) in outputs {
         let full = root.join(&path);
         let current = std::fs::read_to_string(&full).ok().map(|t| t.replace("\r\n", "\n"));
         if current.as_deref() == Some(text.as_str()) {
@@ -87,7 +89,11 @@ fn main() -> ExitCode {
     }
     if stale.is_empty() {
         if check {
-            println!("everything generated from the schema is up to date");
+            println!("everything generated from the schema is up to date: {count} files");
+            println!("{} modules, {} types, {} doc examples", ir.modules.len(), ir.types.len(), examples(&ir).len());
+            for m in &ir.modules {
+                println!("  {} ({} functions, {} constants, {} objects)", m.name, m.functions.len(), m.constants.len(), m.objects.len());
+            }
         }
         ExitCode::SUCCESS
     } else {
