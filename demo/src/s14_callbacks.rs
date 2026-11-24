@@ -26,6 +26,13 @@ pub mod sort {
         Ok(sorted)
     }
 
+    /// Calls `run(...)` with whatever arguments follow it; a callback with a variadic parameter is declared
+    /// `(...T) -> ()`, so any function checks.
+    pub fn call_with(run: Callback<fn(args: mlua_ir::Variadic<String>)>, args: mlua_ir::Variadic<String>) -> mlua::Result<()> {
+        let _ = (run, args);
+        Ok(())
+    }
+
     /// Calls `visit(item, index)` for each item, in order; how many it visited.
     pub fn each(items: Vec<String>, visit: Callback<fn(item: String, index: u32)>) -> mlua::Result<u32> {
         let mut count = 0;

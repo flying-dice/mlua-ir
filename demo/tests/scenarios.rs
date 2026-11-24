@@ -69,6 +69,8 @@ fn what_the_declarations_refuse_is_refused_at_run_time() {
         (r#"require("std:geo").distance({ x = 0, y = 0, lable = "a" }, { x = 0, y = 0 })"#, "unknown field `lable`"),
         (r#"require("std:geo").distance({ x = 0 }, { x = 0, y = 0 })"#, "missing field `y`"),
         (r#"require("std:dir").list("src", { recursve = true })"#, "unknown field `recursve`"),
+        (r#"require("vnd:docker_models").line({ Names = "/x" })"#, "Names: expected a list (a table), got \"/x\""),
+        (r#"require("vnd:docker_models").line({ Labels = { "a=b" } })"#, "Labels key `1`: expected a string, got 1"),
         (r#"require("std:dir").list("src", { max_depth = "5" })"#, "max_depth: expected a whole number from 0 to 4294967295, got \"5\""),
         (r#"require("std:geo").distance({ x = 0, y = "1" }, { x = 0, y = 0 })"#, "y: expected a number, got \"1\""),
         (r#"require("std:log").write("loud", "x")"#, "expected one of \"debug\", \"info\", \"warn\", \"error\", got \"loud\""),

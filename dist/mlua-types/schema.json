@@ -914,6 +914,45 @@
           "is_async": false
         },
         {
+          "name": "call_with",
+          "doc": "Calls `run(...)` with whatever arguments follow it; a callback with a variadic parameter is declared\n`(...T) -> ()`, so any function checks.",
+          "params": [
+            {
+              "name": "run",
+              "ty": {
+                "kind": "function",
+                "params": [
+                  {
+                    "name": "args",
+                    "ty": {
+                      "kind": "string"
+                    },
+                    "optional": true,
+                    "variadic": true
+                  }
+                ],
+                "returns": {
+                  "kind": "none"
+                }
+              },
+              "optional": false
+            },
+            {
+              "name": "args",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": true,
+              "variadic": true
+            }
+          ],
+          "returns": {
+            "kind": "none"
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
           "name": "each",
           "doc": "Calls `visit(item, index)` for each item, in order; how many it visited.",
           "params": [

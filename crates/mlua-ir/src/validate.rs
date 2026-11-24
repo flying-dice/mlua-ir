@@ -106,14 +106,17 @@ pub(crate) fn check(value: &Value, ty: &Ty, types: &HashMap<String, TypeDef>, pa
             }
             Ok(())
         }
-        (Ty::Map { value: item, .. }, Value::Table(table)) => {
+        (Ty::Map { key: key_ty, value: item }, Value::Table(table)) => {
             for pair in table.pairs::<Value, Value>() {
                 let (key, entry) = pair.map_err(|e| e.to_string())?;
                 let shown = key.to_string().unwrap_or_default();
+                check(&key, key_ty, types, &format!("{path}: key `{shown}`")).map_err(|e| e.replacen(": key", " key", 1))?;
                 check(&entry, item, types, &format!("{path}[\"{shown}\"]"))?;
             }
             Ok(())
         }
+        (Ty::List { .. }, value) => Err(format!("{}{}", at(path), expected("a list (a table)", value))),
+        (Ty::Map { .. }, value) => Err(format!("{}{}", at(path), expected("a map (a table)", value))),
         (Ty::Boolean, value) if !matches!(value, Value::Boolean(_)) => Err(format!("{}{}", at(path), expected("a boolean", value))),
         (Ty::String, value) if !matches!(value, Value::String(_)) => Err(format!("{}{}", at(path), expected("a string", value))),
         (Ty::Number, value) if !matches!(value, Value::Number(_) | Value::Integer(_)) => {

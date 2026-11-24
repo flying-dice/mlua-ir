@@ -11,6 +11,9 @@ export type std_sort = {
 	--- assert(sorted[1] == "fig" and sorted[3] == "apple")
 	--- ```
 	sort_by: (items: { string }, before: (left: string, right: string) -> boolean) -> { string },
+	--- Calls `run(...)` with whatever arguments follow it; a callback with a variadic parameter is declared
+	--- `(...T) -> ()`, so any function checks.
+	call_with: (run: (...string) -> (), ...string) -> (),
 	--- Calls `visit(item, index)` for each item, in order; how many it visited.
 	each: (items: { string }, visit: (item: string, index: number) -> ()) -> number,
 }
