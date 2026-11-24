@@ -85,6 +85,18 @@ async fn advance<T, E>(state: &Mutex<State<T, E>>) -> Result<Option<Result<T, E>
     Ok(item)
 }
 
+/// Waits for the next item through the host, like any async call: a host that runs async bodies under its own
+/// rules (yielding the VM's turn while it waits) does so for a stream read too, so a task parked in `next()` does
+/// not hold up the rest of the script.
+async fn wait_for_next<T: MaybeSend + 'static, E: MaybeSend + 'static>(
+    op: &'static str,
+    name: &'static str,
+    state: Arc<Mutex<State<T, E>>>,
+) -> mlua::Result<Option<Result<T, E>>> {
+    let call = crate::host::Call { module: None, name, op, hint: None };
+    crate::host::call_async(&call, async move { advance(&state).await }).await?
+}
+
 impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> UserData for Stream<T, E> {
     fn add_methods<M: UserDataMethods<Self>>(methods: &mut M) {
         methods.add_async_method("next", |lua, this: UserDataRef<Self>, ()| async move {
@@ -94,7 +106,7 @@ impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> UserData for 
             // Hold the state weakly across the wait: a pending `next` must not keep a dropped engine alive.
             let weak = lua.weak();
             drop(lua);
-            let item = advance(&state).await?;
+            let item = wait_for_next(op, "Stream:next", state).await?;
             let lua = weak.upgrade();
             Ok(match item {
                 Some(Ok(item)) => MultiValue::from_vec(vec![item.into_lua_ret(&lua, op)?, Value::Nil]),
@@ -110,7 +122,7 @@ impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> UserData for 
                 async move {
                     let weak = lua.weak();
                     drop(lua);
-                    let item = advance(&state).await?;
+                    let item = wait_for_next(op, "Stream:items", state).await?;
                     let lua = weak.upgrade();
                     match item {
                         Some(Ok(item)) => item.into_lua_ret(&lua, op),
