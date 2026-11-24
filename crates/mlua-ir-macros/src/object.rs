@@ -104,7 +104,10 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
                     quote! {
                         methods.add_async_method(#name, |__lua, this: ::mlua_ir::__private::mlua::UserDataRef<Self>, __args: ::mlua_ir::__private::mlua::MultiValue| async move {
                             #read
+                            let __weak = __lua.weak();
+                            ::core::mem::drop(__lua);
                             let __ret = ::mlua_ir::__private::call_async(#info, async move { this.#ident(#(#args),*).await }).await?;
+                            let __lua = __weak.upgrade();
                             ::mlua_ir::IntoReturn::into_return(__ret, &__lua, #op)
                         });
                     }

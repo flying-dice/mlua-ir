@@ -91,7 +91,12 @@ impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> UserData for 
             let op = this.op;
             let state = this.state.clone();
             drop(this);
-            Ok(match advance(&state).await? {
+            // Hold the state weakly across the wait: a pending `next` must not keep a dropped engine alive.
+            let weak = lua.weak();
+            drop(lua);
+            let item = advance(&state).await?;
+            let lua = weak.upgrade();
+            Ok(match item {
                 Some(Ok(item)) => MultiValue::from_vec(vec![item.into_lua_ret(&lua, op)?, Value::Nil]),
                 Some(Err(error)) => MultiValue::from_vec(vec![Value::Nil, error.into_lua_ret(&lua, op)?]),
                 None => MultiValue::from_vec(vec![Value::Nil, Value::Nil]),
@@ -103,7 +108,11 @@ impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> UserData for 
             lua.create_async_function(move |lua, ()| {
                 let state = state.clone();
                 async move {
-                    match advance(&state).await? {
+                    let weak = lua.weak();
+                    drop(lua);
+                    let item = advance(&state).await?;
+                    let lua = weak.upgrade();
+                    match item {
                         Some(Ok(item)) => item.into_lua_ret(&lua, op),
                         Some(Err(error)) => Err(raised(&error, op)),
                         None => Ok(Value::Nil),

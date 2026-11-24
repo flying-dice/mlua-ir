@@ -160,7 +160,11 @@ pub fn lua_function(call: &TokenStream, call_info: &TokenStream, sig: &Sig, op: 
         quote! {
             lua.create_async_function(|__lua: ::mlua_ir::__private::mlua::Lua, __args: ::mlua_ir::__private::mlua::MultiValue| async move {
                 #read
-                let __ret = ::mlua_ir::__private::call_async(#call_info, #call(#(#args),*)).await?;
+                let __fut = #call(#(#args),*);
+                let __weak = __lua.weak();
+                ::core::mem::drop(__lua);
+                let __ret = ::mlua_ir::__private::call_async(#call_info, __fut).await?;
+                let __lua = __weak.upgrade();
                 ::mlua_ir::IntoReturn::into_return(__ret, &__lua, #op)
             })?
         }
