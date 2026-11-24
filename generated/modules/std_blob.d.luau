@@ -11,12 +11,12 @@ export type std_blob_HexError =
 	| { kind: "not_hex", found: string, message: string, op: string }
 
 --- A name that prints as itself.
-export type std_blob_Label = {
+declare extern type std_blob_Label with
 	--- The same, after yielding once, for a host to see a method.
 	---
 	--- Yields the calling coroutine while it waits.
-	text_later: (self: std_blob_Label) -> string,
-}
+	text_later: (self: std_blob_Label) -> string
+end
 
 --- The statics of `std_blob_Label`.
 export type std_blob_LabelStatics = {

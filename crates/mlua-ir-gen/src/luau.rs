@@ -145,18 +145,20 @@ pub fn type_def(def: &TypeDef) -> String {
                 let _ = writeln!(out, "\t{}{}", if i == 0 { "" } else { "| " }, inline_table(&fields));
             }
         }
+        // A userdata is an extern type, not a table type: `typeof(x) == "<name>"` narrows to it (the userdata's
+        // `__type` is its declared name), so a union of objects can be told apart.
         TypeBody::Object { fields, methods, statics } => {
             doc(&mut out, def.doc.as_deref(), "");
-            let _ = writeln!(out, "export type {name} = {{");
+            let _ = writeln!(out, "declare extern type {name} with");
             for f in fields {
                 doc(&mut out, Some(&with_readonly(f)), "\t");
-                let _ = writeln!(out, "\t{}: {},", key(&f.name), ty(&f.ty));
+                let _ = writeln!(out, "\t{}: {}", key(&f.name), ty(&f.ty));
             }
             for m in methods {
                 doc(&mut out, function_doc(m, raises(m)).as_deref(), "\t");
-                let _ = writeln!(out, "\t{}: {},", key(&m.name), function_type(&m.params, &m.returns, Some(name)));
+                let _ = writeln!(out, "\t{}: {}", key(&m.name), function_type(&m.params, &m.returns, Some(name)));
             }
-            out.push_str("}\n");
+            out.push_str("end\n");
             if !statics.is_empty() {
                 let _ = writeln!(out, "\n--- The statics of `{name}`.\nexport type {name}Statics = {{");
                 for s in statics {
@@ -215,7 +217,9 @@ pub fn ty(t: &Ty) -> String {
         Ty::Boolean => "boolean".into(),
         Ty::Integer { .. } | Ty::Number => "number".into(),
         Ty::String => "string".into(),
-        Ty::Unknown { .. } => "unknown".into(),
+        // Luau cannot narrow `unknown` to anything a script can index, so genuinely unknown data (which always says
+        // why, in the IR) is `any` here; TypeScript, which narrows `unknown`, keeps it.
+        Ty::Unknown { .. } => "any".into(),
         Ty::Optional { inner } => match **inner {
             Ty::Union { .. } | Ty::Function { .. } => format!("({})?", ty(inner)),
             _ => format!("{}?", ty(inner)),

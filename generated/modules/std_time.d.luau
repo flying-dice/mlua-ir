@@ -1,17 +1,17 @@
 -- ===== std:time =====
 
 --- A length of time.
-export type std_time_Duration = {
+declare extern type std_time_Duration with
 	--- The length in seconds. Read-only.
-	as_seconds: number,
+	as_seconds: number
 	--- This and `other` together.
 	---
 	--- ```luau
 	--- local d = time.Duration.seconds(1):plus(time.Duration.seconds(0.5))
 	--- assert(d.as_seconds == 1.5)
 	--- ```
-	plus: (self: std_time_Duration, other: std_time_Duration) -> std_time_Duration,
-}
+	plus: (self: std_time_Duration, other: std_time_Duration) -> std_time_Duration
+end
 
 --- The statics of `std_time_Duration`.
 export type std_time_DurationStatics = {

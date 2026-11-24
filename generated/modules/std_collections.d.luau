@@ -1,16 +1,16 @@
 -- ===== std:collections =====
 
 --- A counter. Clones share one value.
-export type std_collections_Counter = {
+declare extern type std_collections_Counter with
 	--- The current value. Read-only.
-	value: number,
+	value: number
 	--- Add one; the new value.
-	increment: (self: std_collections_Counter) -> number,
+	increment: (self: std_collections_Counter) -> number
 	--- Add `n`; the new value.
-	add: (self: std_collections_Counter, n: number) -> number,
+	add: (self: std_collections_Counter, n: number) -> number
 	--- Set the value to `n`.
-	set: (self: std_collections_Counter, n: number) -> (),
-}
+	set: (self: std_collections_Counter, n: number) -> ()
+end
 
 --- The statics of `std_collections_Counter`.
 export type std_collections_CounterStatics = {

@@ -28,6 +28,11 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
         Type::Path(p) => p.path.segments.last().map(|s| s.ident.to_string()).unwrap_or_default(),
         other => return Err(syn::Error::new_spanned(other, "`#[object]` goes on `impl SomeType`")),
     };
+    // The name its declaration has (`std_time_Duration`): `typeof(x)` returns a userdata's `__type`.
+    let type_name = match &module {
+        Some(m) => format!("{}_{short}", m.replace([':', '.', '-', '/'], "_")),
+        None => short.clone(),
+    };
     let base = match &module {
         Some(m) => format!("{m}.{short}"),
         None => short.clone(),
@@ -149,7 +154,7 @@ pub fn expand(args: TokenStream, mut block: ItemImpl) -> syn::Result<TokenStream
 
         impl ::mlua_ir::__private::mlua::UserData for #self_ty {
             fn add_fields<F: ::mlua_ir::__private::mlua::UserDataFields<Self>>(fields: &mut F) {
-                let _ = &fields;
+                fields.add_meta_field("__type", #type_name);
                 #(#fields_install)*
             }
 

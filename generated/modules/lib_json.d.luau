@@ -19,14 +19,14 @@ export type lib_json = {
 	---     assert(object.n == 1)
 	--- end
 	--- ```
-	decode: (text: string) -> (unknown, lib_json_JsonError?),
+	decode: (text: string) -> (any, lib_json_JsonError?),
 	--- `value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).
 	---
 	--- ```luau
 	--- local t = {}
 	--- assert(json.identity(t) == t)
 	--- ```
-	identity: (value: unknown) -> unknown,
+	identity: (value: any) -> any,
 	--- Write plain data as JSON text.
-	encode: (value: unknown) -> string,
+	encode: (value: any) -> string,
 }

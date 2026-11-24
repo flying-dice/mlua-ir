@@ -1,17 +1,17 @@
 -- ===== vnd:bollard =====
 
 --- A client for one daemon.
-export type vnd_bollard_Client = {
+declare extern type vnd_bollard_Client with
 	--- The daemon this client talks to. Read-only.
-	host: string,
+	host: string
 	--- The containers, as Docker's summaries. Only running ones unless `all`.
 	---
 	--- Yields the calling coroutine while it waits.
-	list_containers: (self: vnd_bollard_Client, opts: vnd_bollard_ListContainers?) -> ({ vnd_bollard_ContainerSummary }?, vnd_bollard_DockerError?),
+	list_containers: (self: vnd_bollard_Client, opts: vnd_bollard_ListContainers?) -> ({ vnd_bollard_ContainerSummary }?, vnd_bollard_DockerError?)
 	--- One container's summary, or `nil` when there is none: absence is not an error.
 	---
 	--- Yields the calling coroutine while it waits.
-	find_container: (self: vnd_bollard_Client, name: std_names_ContainerName) -> (vnd_bollard_ContainerSummary?, vnd_bollard_DockerError?),
+	find_container: (self: vnd_bollard_Client, name: std_names_ContainerName) -> (vnd_bollard_ContainerSummary?, vnd_bollard_DockerError?)
 	--- Create a container from Docker's own create body (`Image`, `Labels`, `Env`, `HostConfig`, ...): its id.
 	---
 	--- ```luau
@@ -21,10 +21,10 @@ export type vnd_bollard_Client = {
 	--- ```
 	---
 	--- Yields the calling coroutine while it waits.
-	create_container: (self: vnd_bollard_Client, name: std_names_ContainerName, body: vnd_bollard_ContainerCreateBody) -> (string?, vnd_bollard_DockerError?),
+	create_container: (self: vnd_bollard_Client, name: std_names_ContainerName, body: vnd_bollard_ContainerCreateBody) -> (string?, vnd_bollard_DockerError?)
 	--- A container's output as a stream; a container that does not exist is the stream's error.
-	logs: (self: vnd_bollard_Client, name: std_names_ContainerName, opts: vnd_bollard_Logs?) -> mlua_Stream<vnd_bollard_LogPiece, vnd_bollard_DockerError>,
-}
+	logs: (self: vnd_bollard_Client, name: std_names_ContainerName, opts: vnd_bollard_Logs?) -> mlua_Stream<vnd_bollard_LogPiece, vnd_bollard_DockerError>
+end
 
 --- How to reach a daemon.
 export type vnd_bollard_ConnectOptions = {

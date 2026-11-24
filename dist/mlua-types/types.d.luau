@@ -44,16 +44,16 @@ export type lib_json = {
 	---     assert(object.n == 1)
 	--- end
 	--- ```
-	decode: (text: string) -> (unknown, lib_json_JsonError?),
+	decode: (text: string) -> (any, lib_json_JsonError?),
 	--- `value` itself, not a copy: a table comes back as the same table (`mlua_ir::Live`).
 	---
 	--- ```luau
 	--- local t = {}
 	--- assert(json.identity(t) == t)
 	--- ```
-	identity: (value: unknown) -> unknown,
+	identity: (value: any) -> any,
 	--- Write plain data as JSON text.
-	encode: (value: unknown) -> string,
+	encode: (value: any) -> string,
 }
 
 -- ===== std:blob =====
@@ -69,12 +69,12 @@ export type std_blob_HexError =
 	| { kind: "not_hex", found: string, message: string, op: string }
 
 --- A name that prints as itself.
-export type std_blob_Label = {
+declare extern type std_blob_Label with
 	--- The same, after yielding once, for a host to see a method.
 	---
 	--- Yields the calling coroutine while it waits.
-	text_later: (self: std_blob_Label) -> string,
-}
+	text_later: (self: std_blob_Label) -> string
+end
 
 --- The statics of `std_blob_Label`.
 export type std_blob_LabelStatics = {
@@ -118,16 +118,16 @@ export type std_blob = {
 -- ===== std:collections =====
 
 --- A counter. Clones share one value.
-export type std_collections_Counter = {
+declare extern type std_collections_Counter with
 	--- The current value. Read-only.
-	value: number,
+	value: number
 	--- Add one; the new value.
-	increment: (self: std_collections_Counter) -> number,
+	increment: (self: std_collections_Counter) -> number
 	--- Add `n`; the new value.
-	add: (self: std_collections_Counter, n: number) -> number,
+	add: (self: std_collections_Counter, n: number) -> number
 	--- Set the value to `n`.
-	set: (self: std_collections_Counter, n: number) -> (),
-}
+	set: (self: std_collections_Counter, n: number) -> ()
+end
 
 --- The statics of `std_collections_Counter`.
 export type std_collections_CounterStatics = {
@@ -380,7 +380,7 @@ export type std_parse = {
 	--- local err = parse.error_of(caught)
 	--- assert(err ~= nil and err.kind == "not_a_number")
 	--- ```
-	error_of: (caught: unknown) -> std_parse_ParseError?,
+	error_of: (caught: any) -> std_parse_ParseError?,
 }
 
 -- ===== std:sort =====
@@ -406,7 +406,7 @@ export type std_sort = {
 -- ===== std:task =====
 
 --- A clock that ticks once per `wait`.
-export type std_task_Clock = {
+declare extern type std_task_Clock with
 	--- Wait `ms` milliseconds, then tick; the number of ticks so far.
 	---
 	--- ```luau
@@ -416,8 +416,8 @@ export type std_task_Clock = {
 	--- ```
 	---
 	--- Yields the calling coroutine while it waits.
-	wait: (self: std_task_Clock, ms: number) -> number,
-}
+	wait: (self: std_task_Clock, ms: number) -> number
+end
 
 --- The statics of `std_task_Clock`.
 export type std_task_ClockStatics = {
@@ -454,17 +454,17 @@ export type std_text = {
 -- ===== std:time =====
 
 --- A length of time.
-export type std_time_Duration = {
+declare extern type std_time_Duration with
 	--- The length in seconds. Read-only.
-	as_seconds: number,
+	as_seconds: number
 	--- This and `other` together.
 	---
 	--- ```luau
 	--- local d = time.Duration.seconds(1):plus(time.Duration.seconds(0.5))
 	--- assert(d.as_seconds == 1.5)
 	--- ```
-	plus: (self: std_time_Duration, other: std_time_Duration) -> std_time_Duration,
-}
+	plus: (self: std_time_Duration, other: std_time_Duration) -> std_time_Duration
+end
 
 --- The statics of `std_time_Duration`.
 export type std_time_DurationStatics = {
@@ -489,17 +489,17 @@ export type std_time = {
 -- ===== vnd:bollard =====
 
 --- A client for one daemon.
-export type vnd_bollard_Client = {
+declare extern type vnd_bollard_Client with
 	--- The daemon this client talks to. Read-only.
-	host: string,
+	host: string
 	--- The containers, as Docker's summaries. Only running ones unless `all`.
 	---
 	--- Yields the calling coroutine while it waits.
-	list_containers: (self: vnd_bollard_Client, opts: vnd_bollard_ListContainers?) -> ({ vnd_bollard_ContainerSummary }?, vnd_bollard_DockerError?),
+	list_containers: (self: vnd_bollard_Client, opts: vnd_bollard_ListContainers?) -> ({ vnd_bollard_ContainerSummary }?, vnd_bollard_DockerError?)
 	--- One container's summary, or `nil` when there is none: absence is not an error.
 	---
 	--- Yields the calling coroutine while it waits.
-	find_container: (self: vnd_bollard_Client, name: std_names_ContainerName) -> (vnd_bollard_ContainerSummary?, vnd_bollard_DockerError?),
+	find_container: (self: vnd_bollard_Client, name: std_names_ContainerName) -> (vnd_bollard_ContainerSummary?, vnd_bollard_DockerError?)
 	--- Create a container from Docker's own create body (`Image`, `Labels`, `Env`, `HostConfig`, ...): its id.
 	---
 	--- ```luau
@@ -509,10 +509,10 @@ export type vnd_bollard_Client = {
 	--- ```
 	---
 	--- Yields the calling coroutine while it waits.
-	create_container: (self: vnd_bollard_Client, name: std_names_ContainerName, body: vnd_bollard_ContainerCreateBody) -> (string?, vnd_bollard_DockerError?),
+	create_container: (self: vnd_bollard_Client, name: std_names_ContainerName, body: vnd_bollard_ContainerCreateBody) -> (string?, vnd_bollard_DockerError?)
 	--- A container's output as a stream; a container that does not exist is the stream's error.
-	logs: (self: vnd_bollard_Client, name: std_names_ContainerName, opts: vnd_bollard_Logs?) -> mlua_Stream<vnd_bollard_LogPiece, vnd_bollard_DockerError>,
-}
+	logs: (self: vnd_bollard_Client, name: std_names_ContainerName, opts: vnd_bollard_Logs?) -> mlua_Stream<vnd_bollard_LogPiece, vnd_bollard_DockerError>
+end
 
 --- How to reach a daemon.
 export type vnd_bollard_ConnectOptions = {

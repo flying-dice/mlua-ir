@@ -1,7 +1,7 @@
 -- ===== std:task =====
 
 --- A clock that ticks once per `wait`.
-export type std_task_Clock = {
+declare extern type std_task_Clock with
 	--- Wait `ms` milliseconds, then tick; the number of ticks so far.
 	---
 	--- ```luau
@@ -11,8 +11,8 @@ export type std_task_Clock = {
 	--- ```
 	---
 	--- Yields the calling coroutine while it waits.
-	wait: (self: std_task_Clock, ms: number) -> number,
-}
+	wait: (self: std_task_Clock, ms: number) -> number
+end
 
 --- The statics of `std_task_Clock`.
 export type std_task_ClockStatics = {

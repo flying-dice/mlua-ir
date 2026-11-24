@@ -23,5 +23,5 @@ export type std_parse = {
 	--- local err = parse.error_of(caught)
 	--- assert(err ~= nil and err.kind == "not_a_number")
 	--- ```
-	error_of: (caught: unknown) -> std_parse_ParseError?,
+	error_of: (caught: any) -> std_parse_ParseError?,
 }
