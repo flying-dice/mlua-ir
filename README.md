@@ -1,5 +1,7 @@
 # mlua-ir
 
+[![CI](https://github.com/flying-dice/mlua-ir/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/flying-dice/mlua-ir/actions/workflows/ci.yml)
+
 **Write a Lua API once, in plain Rust. Get the Luau and TypeScript types for free.**
 
 mlua-ir reads an mlua API straight from its Rust signatures and turns it into one intermediate representation: a

@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  BUN_VERSION: "1.4.5"
+  LUAU_LSP_VERSION: "1.70.1"
+
+jobs:
+  # One job per platform, each running the repository's own gate: `tools/check.sh` (the generated files against the
+  # schema, luau-lsp, tsc, tstl, every scenario script and doc example by name, the cargo tests, clippy).
+  check:
+    name: check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            luau_lsp_asset: luau-lsp-linux-x86_64.zip
+            luau_lsp_sha256: 1a2ea1ae4f98f8946cefd970a4b54853e11ab4775e6932faa7f60cf920346567
+          - os: windows-latest
+            luau_lsp_asset: luau-lsp-win64.zip
+            luau_lsp_sha256: 64225b9738102a30de6ee09fb28e5a3827edc402ecf2a6364af570312468159f
+          - os: macos-latest
+            luau_lsp_asset: luau-lsp-macos.zip
+            luau_lsp_sha256: 7d3936e8dec6dc77547abd061d2e950da392562a5f94858b880f23dba50d84cd
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Rust (stable, with clippy)
+        run: |
+          rustup toolchain install stable --profile minimal --component clippy
+          rustup default stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - run: bun install --frozen-lockfile
+      - name: Install luau-lsp (pinned, sha256-verified)
+        env:
+          ASSET: ${{ matrix.luau_lsp_asset }}
+          SHA256: ${{ matrix.luau_lsp_sha256 }}
+        run: |
+          dir="$RUNNER_TEMP/luau-lsp"
+          mkdir -p "$dir"
+          cd "$dir"
+          curl -fsSL -o "$ASSET" \
+            "https://github.com/JohnnyMorganz/luau-lsp/releases/download/${LUAU_LSP_VERSION}/${ASSET}"
+          echo "${SHA256}  ${ASSET}" | shasum -a 256 -c -
+          unzip -q "$ASSET"
+          chmod +x luau-lsp*
+          pwd >> "$GITHUB_PATH"
+          ./luau-lsp --version
+      - run: bash tools/check.sh
