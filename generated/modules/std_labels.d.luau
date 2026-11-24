@@ -16,6 +16,13 @@ export type std_labels = {
 	--- assert(map.app == "web")
 	--- ```
 	parse: (lines: { string }) -> ({ [string]: string }?, std_labels_LabelError?),
+	--- How many values were passed, `nil`s included: `labels.count("a", nil)` is 2. A variadic last parameter
+	--- (`mlua_ir::Variadic<T>`) keeps the trailing `nil` a list would drop.
+	---
+	--- ```luau
+	--- assert(labels.count("a", nil) == 2)
+	--- ```
+	count: (...string?) -> number,
 	--- The keys of a map, sorted.
 	keys: (labels: { [string]: string }) -> { string },
 	--- The first key (if any) and how many there are.

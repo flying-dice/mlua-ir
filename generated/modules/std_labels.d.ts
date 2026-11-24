@@ -18,6 +18,15 @@ declare module "std:labels" {
    * ```
    */
   export function parse(this: void, lines: string[]): LuaMultiReturn<[{ [key: string]: string }, undefined] | [undefined, std_labels_LabelError]>
+  /**
+   * How many values were passed, `nil`s included: `labels.count("a", nil)` is 2. A variadic last parameter
+   * (`mlua_ir::Variadic<T>`) keeps the trailing `nil` a list would drop.
+   *
+   * ```luau
+   * assert(labels.count("a", nil) == 2)
+   * ```
+   */
+  export function count(this: void, ...values: (string | undefined)[]): number
   /** The keys of a map, sorted. */
   export function keys(this: void, labels: { [key: string]: string }): string[]
   /** The first key (if any) and how many there are. */

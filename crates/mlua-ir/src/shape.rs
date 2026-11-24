@@ -14,6 +14,22 @@ pub trait Shape {
 
     /// A parameter of this type may be left out by the caller.
     const OPTIONAL_PARAM: bool = false;
+
+    /// A parameter of this type takes every remaining argument (only [`Variadic`]).
+    const VARIADIC: bool = false;
+}
+
+/// The variadic last parameter: every remaining argument, `nil`s included (`f(sql, 1, nil)` passes two values,
+/// which a list cannot carry). Declared `...T`. The macro recognises it by its name, so it must be written
+/// `Variadic<T>` (or `mlua_ir::Variadic<T>`) as the last parameter.
+pub struct Variadic<T>(pub Vec<T>);
+
+impl<T: Shape> Shape for Variadic<T> {
+    fn shape(reg: &mut Registry) -> Ty {
+        T::shape(reg)
+    }
+    const OPTIONAL_PARAM: bool = true;
+    const VARIADIC: bool = true;
 }
 
 impl Shape for () {

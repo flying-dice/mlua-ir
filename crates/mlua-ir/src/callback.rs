@@ -57,7 +57,7 @@ macro_rules! callback_arity {
                 let mut index = 0;
                 let params = vec![$({
                     index += 1;
-                    Param { name: format!("arg{index}"), ty: $a::shape(reg), optional: false }
+                    Param { name: format!("arg{index}"), ty: $a::shape(reg), optional: false, variadic: false }
                 }),*];
                 let _ = index;
                 Ty::Function { params, returns: Box::new(returns_of::<R>(reg)) }

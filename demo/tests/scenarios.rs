@@ -186,7 +186,7 @@ fn a_release_diff_tells_additions_from_breaks() {
     assert!(shown.contains(&"BREAKING: `std:text.pad` changed its signature".to_owned()), "{shown:#?}");
     assert!(shown.contains(&"addition: `std:dir.list` changed its signature".to_owned()), "{shown:#?}");
     assert!(changes.iter().any(|c| c.level == Level::Breaking));
-    let _ = Param { name: String::new(), ty: Ty::Nil, optional: false };
+    let _ = Param { name: String::new(), ty: Ty::Nil, optional: false, variadic: false };
 }
 
 /// `ts/usage.ts`, compiled to Luau by TypeScriptToLua (`bun run build:ts`), runs in the same VM. `tools/check.sh`

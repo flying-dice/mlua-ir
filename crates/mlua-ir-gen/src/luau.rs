@@ -221,6 +221,8 @@ pub fn ty(t: &Ty) -> String {
             _ => format!("{}?", ty(inner)),
         },
         Ty::List { item } => format!("{{ {} }}", ty(item)),
+        // `{ T }` is Luau's own spelling of `{ [number]: T }`, and the one its checker reads a mixed literal against.
+        Ty::Map { key: k, value } if matches!(**k, Ty::Integer { .. } | Ty::Number) => format!("{{ {} }}", ty(value)),
         Ty::Map { key: k, value } => format!("{{ [{}]: {} }}", ty(k), ty(value)),
         Ty::Literal { value } => quoted(value),
         Ty::Union { members } => members
@@ -236,6 +238,9 @@ pub fn ty(t: &Ty) -> String {
 
 fn param(p: &Param) -> String {
     let t = ty(&p.ty);
+    if p.variadic {
+        return format!("...{t}");
+    }
     if p.optional && !is_optional(&p.ty) { format!("{}: {t}?", p.name) } else { format!("{}: {t}", p.name) }
 }
 

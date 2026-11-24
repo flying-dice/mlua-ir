@@ -122,7 +122,11 @@ pub fn read_args(sig: &Sig, op: &str, lua: &TokenStream) -> (TokenStream, Vec<To
         let ty = &p.ty;
         let pname = &p.name;
         let index = i + 1;
-        lets.push(quote! { let #ident: #ty = ::mlua_ir::arg(#lua, __args.next(), #op, #index, #pname)?; });
+        if i + 1 == sig.params.len() && is_variadic(ty) {
+            lets.push(quote! { let #ident: #ty = ::mlua_ir::rest(#lua, &mut __args, #op, #index, #pname)?; });
+        } else {
+            lets.push(quote! { let #ident: #ty = ::mlua_ir::arg(#lua, __args.next(), #op, #index, #pname)?; });
+        }
         idents.push(quote!(#ident));
     }
     let count = sig.params.len();
@@ -171,4 +175,9 @@ pub fn lua_function(call: &TokenStream, call_info: &TokenStream, sig: &Sig, op: 
             })?
         }
     }
+}
+
+/// `Variadic<T>`, by its last path segment: the macro cannot see types, so the variadic parameter is named.
+fn is_variadic(ty: &Type) -> bool {
+    matches!(ty, Type::Path(p) if p.path.segments.last().is_some_and(|s| s.ident == "Variadic"))
 }

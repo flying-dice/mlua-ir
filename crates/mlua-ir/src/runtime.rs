@@ -85,7 +85,26 @@ pub fn no_more_args(mut rest: impl Iterator<Item = Value>, op: &str, taken: usiz
 pub fn param<T: Shape>(reg: &mut Registry, name: &str, callback_names: &[&str]) -> Param {
     let mut ty = T::shape(reg);
     crate::callback::name_params(&mut ty, callback_names);
-    Param { name: name.to_owned(), ty, optional: T::OPTIONAL_PARAM }
+    Param { name: name.to_owned(), ty, optional: T::OPTIONAL_PARAM, variadic: T::VARIADIC }
+}
+
+/// Reads every remaining argument as the variadic last parameter `name` of `op`, starting at `index`. `nil`s are
+/// kept: `f(1, nil)` passes two, which a list cannot carry.
+pub fn rest<T: FromLuaArg>(
+    lua: &Lua,
+    rest: impl Iterator<Item = Value>,
+    op: &str,
+    index: usize,
+    name: &str,
+) -> mlua::Result<crate::Variadic<T>> {
+    rest.enumerate()
+        .map(|(i, value)| {
+            T::from_lua_arg(value, lua).map_err(|reason| {
+                mlua::Error::runtime(format!("{op}: argument #{} '{name}': {reason}", index + i))
+            })
+        })
+        .collect::<mlua::Result<Vec<T>>>()
+        .map(crate::Variadic)
 }
 
 /// Collapses a `///` doc into the IR's text: `None` when there is none.

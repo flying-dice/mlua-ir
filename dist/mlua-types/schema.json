@@ -611,6 +611,33 @@
           "is_async": false
         },
         {
+          "name": "count",
+          "doc": "How many values were passed, `nil`s included: `labels.count(\"a\", nil)` is 2. A variadic last parameter\n(`mlua_ir::Variadic<T>`) keeps the trailing `nil` a list would drop.\n\n```luau\nassert(labels.count(\"a\", nil) == 2)\n```",
+          "params": [
+            {
+              "name": "values",
+              "ty": {
+                "kind": "optional",
+                "inner": {
+                  "kind": "string"
+                }
+              },
+              "optional": true,
+              "variadic": true
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "integer",
+              "min": 0,
+              "max": 18446744073709551615
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
           "name": "keys",
           "doc": "The keys of a map, sorted.",
           "params": [

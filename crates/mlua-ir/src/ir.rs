@@ -77,6 +77,9 @@ pub struct Param {
     pub ty: Ty,
     /// The argument may be left out (`Option<T>`, an options table).
     pub optional: bool,
+    /// The last parameter takes every remaining argument, `nil`s included (`mlua_ir::Variadic<T>`).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub variadic: bool,
 }
 
 /// What a call gives back.

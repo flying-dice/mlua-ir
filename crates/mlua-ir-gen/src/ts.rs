@@ -246,6 +246,9 @@ pub fn ty(t: &Ty) -> String {
 }
 
 fn param(p: &Param) -> String {
+    if p.variadic {
+        return format!("...{}: {}[]", p.name, wrapped(&p.ty));
+    }
     match (&p.ty, p.optional) {
         (Ty::Optional { inner }, true) => format!("{}?: {}", p.name, ty(inner)),
         (t, true) => format!("{}?: {}", p.name, ty(t)),

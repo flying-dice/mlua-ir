@@ -33,6 +33,16 @@ pub mod labels {
         Ok(map)
     }
 
+    /// How many values were passed, `nil`s included: `labels.count("a", nil)` is 2. A variadic last parameter
+    /// (`mlua_ir::Variadic<T>`) keeps the trailing `nil` a list would drop.
+    ///
+    /// ```luau
+    /// assert(labels.count("a", nil) == 2)
+    /// ```
+    pub fn count(values: mlua_ir::Variadic<Option<String>>) -> usize {
+        values.0.len()
+    }
+
     /// The keys of a map, sorted.
     pub fn keys(labels: BTreeMap<String, String>) -> Vec<String> {
         labels.into_keys().collect()
