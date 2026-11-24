@@ -73,6 +73,23 @@ fn main() -> ExitCode {
     let mut stale = Vec::new();
     let outputs = outputs(&ir);
     let count = outputs.len();
+    // A file in a folder the schema writes whole that it no longer produces is a leftover: removed, or a stale
+    // file under `--check`.
+    for dir in ["generated/examples", "generated/modules"] {
+        let Ok(entries) = std::fs::read_dir(root.join(dir)) else { continue };
+        for entry in entries.filter_map(Result::ok) {
+            let path = PathBuf::from(dir).join(entry.file_name());
+            if outputs.contains_key(&path) {
+                continue;
+            }
+            if check {
+                stale.push(path);
+            } else {
+                std::fs::remove_file(entry.path()).expect("the leftover is removed");
+                println!("removed {}", path.display());
+            }
+        }
+    }
     for (path, text) in outputs {
         let full = root.join(&path);
         let current = std::fs::read_to_string(&full).ok().map(|t| t.replace("\r\n", "\n"));
