@@ -66,6 +66,6 @@ jobs:
           echo "${SHA256}  ${ASSET}" | shasum -a 256 -c -
           unzip -q "$ASSET"
           chmod +x luau-lsp*
-          pwd >> "$GITHUB_PATH"
+          echo "$dir" >> "$GITHUB_PATH"
           ./luau-lsp --version
       - run: bash tools/check.sh
