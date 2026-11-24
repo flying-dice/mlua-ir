@@ -97,11 +97,18 @@ impl<T: IntoLuaRet + MaybeSend + 'static, E: LuaError + MaybeSend> IntoLuaRet fo
 /// promptly and no further item is ever given, even one the producer completes at the same moment.
 async fn advance<T, E>(shared: &Shared<T, E>) -> Result<Option<Result<T, E>>, mlua::Error> {
     if shared.closed.load(Ordering::SeqCst) {
+        // A read cancelled after `close` but before it woke left the stream in place: drop it (and its producer).
+        if let Some(mut stream) = shared.stream.try_lock() {
+            *stream = None;
+        }
         return Ok(None);
     }
-    let Some(mut guard) = shared.stream.try_lock() else {
+    let Some(guard) = shared.stream.try_lock() else {
         return Err(mlua::Error::runtime("the stream is already being read"));
     };
+    // However this read ends — answered, or cancelled while it waits — a stream closed meanwhile is dropped as the
+    // read lets go of it, so a cancelled read never keeps a closed stream's producer alive.
+    let mut guard = DropIfClosed { guard, closed: &shared.closed };
     let polled = {
         let Some(stream) = guard.as_mut() else { return Ok(None) };
         poll_fn(|cx| {
@@ -120,6 +127,33 @@ async fn advance<T, E>(shared: &Shared<T, E>) -> Result<Option<Result<T, E>>, ml
         _ => {
             *guard = None;
             Ok(None)
+        }
+    }
+}
+
+/// The read's hold on the stream; on release, drops a stream that was closed meanwhile.
+struct DropIfClosed<'a, T, E> {
+    guard: futures::lock::MutexGuard<'a, Option<Boxed<T, E>>>,
+    closed: &'a AtomicBool,
+}
+
+impl<T, E> std::ops::Deref for DropIfClosed<'_, T, E> {
+    type Target = Option<Boxed<T, E>>;
+    fn deref(&self) -> &Self::Target {
+        &self.guard
+    }
+}
+
+impl<T, E> std::ops::DerefMut for DropIfClosed<'_, T, E> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.guard
+    }
+}
+
+impl<T, E> Drop for DropIfClosed<'_, T, E> {
+    fn drop(&mut self) {
+        if self.closed.load(Ordering::SeqCst) {
+            *self.guard = None;
         }
     }
 }
@@ -274,6 +308,17 @@ mod tests {
         drop(pending);
         tx.unbounded_send(Ok(7)).unwrap();
         assert!(matches!(poll(&mut read(&shared), waker), Poll::Ready(Ok(Some(Ok(7))))));
+    }
+
+    #[test]
+    fn a_read_cancelled_after_close_does_not_keep_the_producer_alive() {
+        let (tx, shared) = shared();
+        let mut pending = read(&shared);
+        assert!(poll(&mut pending, Waker::noop()).is_pending());
+        shared.close();
+        drop(pending);
+        assert!(tx.is_closed(), "the cancelled read dropped the closed stream as it let go of it");
+        assert!(matches!(poll(&mut read(&shared), Waker::noop()), Poll::Ready(Ok(None))));
     }
 
     #[test]
