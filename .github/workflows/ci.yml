@@ -63,7 +63,9 @@ jobs:
           cd "$dir"
           curl -fsSL -o "$ASSET" \
             "https://github.com/JohnnyMorganz/luau-lsp/releases/download/${LUAU_LSP_VERSION}/${ASSET}"
-          echo "${SHA256}  ${ASSET}" | shasum -a 256 -c -
+          # sha256sum on Linux and in Git Bash, shasum on macOS
+          if command -v sha256sum >/dev/null; then sum="sha256sum"; else sum="shasum -a 256"; fi
+          echo "${SHA256}  ${ASSET}" | $sum -c -
           unzip -q "$ASSET"
           chmod +x luau-lsp*
           echo "$dir" >> "$GITHUB_PATH"
