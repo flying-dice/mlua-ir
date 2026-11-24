@@ -205,3 +205,20 @@ fn the_typescript_backend_compiled_by_tstl_runs() {
         panic!("ts/out/usage.lua failed:\n{e}");
     }
 }
+
+/// bollard's models with parsed dates (its `time` feature) and enums that parse their own text both trace: a
+/// trace reads every string as `""`, then, if that fails, as a valid date-time. A model that needs both in one tree
+/// (bollard's `Volume`: a `CreatedAt` date and `ClusterVolume`'s text-parsed enums) does not trace; a module mirrors
+/// such a model with its own typed record.
+#[test]
+fn models_with_dates_and_self_parsing_enums_trace() {
+    use bollard_stubs::models::{ContainerInspectResponse, ContainerStatsResponse, Network, SystemInfo};
+    use mlua_ir::{Foreign, Registry, Shape};
+    let mut reg = Registry::new();
+    reg.enter_module("probe");
+    let _ = <Foreign<SystemInfo> as Shape>::shape(&mut reg);
+    let _ = <Foreign<ContainerInspectResponse> as Shape>::shape(&mut reg);
+    let _ = <Foreign<ContainerStatsResponse> as Shape>::shape(&mut reg);
+    let _ = <Foreign<Vec<Network>> as Shape>::shape(&mut reg);
+    assert!(reg.into_types().len() > 50);
+}

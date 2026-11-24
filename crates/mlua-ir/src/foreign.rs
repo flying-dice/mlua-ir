@@ -37,40 +37,59 @@ thread_local! {
     static TRACED: RefCell<HashMap<TypeId, std::rc::Rc<Traced>>> = RefCell::new(HashMap::new());
 }
 
+/// The strings a trace reads wherever a type asks for one, tried in order. Most types take any string, and some
+/// enums that parse their own text accept only `""` (bollard's `EMPTY` variants); a type whose `Deserialize`
+/// validates a date (bollard's models with its `time` feature) refuses `""`, so a valid date-time is the fallback.
+pub(crate) const SAMPLE_TEXTS: [&str; 2] = ["", "1970-01-01T00:00:00Z"];
+
+fn config(sample: &'static str) -> TracerConfig {
+    TracerConfig::default().default_borrowed_str_value(sample).default_string_value(sample.to_owned())
+}
+
+/// One complete trace of `T` with `sample` as every string.
+fn trace_with<T: DeserializeOwned>(sample: &'static str) -> serde_reflection::Result<(Format, BTreeMap<String, ContainerFormat>)> {
+    let samples = Samples::new();
+    // serde-reflection walks one variant of a nested enum per pass and marks the enum incomplete; clearing the
+    // marks and walking again finds the rest. A first pass learns the enums' names.
+    let mut probe = Tracer::new(config(sample));
+    probe.trace_type_once::<T>(&samples)?;
+    let enums: Vec<String> = probe
+        .registry_unchecked()
+        .into_iter()
+        .filter(|(_, c)| matches!(c, ContainerFormat::Enum(_)))
+        .map(|(name, _)| name)
+        .collect();
+    let mut tracer = Tracer::new(config(sample));
+    let mut format = loop {
+        let (format, _) = tracer.trace_type_once::<T>(&samples)?;
+        let mut incomplete = false;
+        for name in &enums {
+            incomplete |= tracer.check_incomplete_enum(name).is_some();
+        }
+        if !incomplete {
+            break format;
+        }
+    };
+    format.normalize().ok();
+    Ok((format, tracer.registry()?))
+}
+
 fn traced<T: DeserializeOwned + 'static>() -> std::rc::Rc<Traced> {
     TRACED.with(|cache| {
         cache
             .borrow_mut()
             .entry(TypeId::of::<T>())
             .or_insert_with(|| {
-                let fail = |e: serde_reflection::Error| -> ! { panic!("tracing {}: {e}", std::any::type_name::<T>()) };
-                let samples = Samples::new();
-                // serde-reflection walks one variant of a nested enum per pass and marks the enum incomplete;
-                // clearing the marks and walking again finds the rest. A first pass learns the enums' names.
-                let mut probe = Tracer::new(TracerConfig::default());
-                probe.trace_type_once::<T>(&samples).unwrap_or_else(|e| fail(e));
-                let enums: Vec<String> = probe
-                    .registry_unchecked()
-                    .into_iter()
-                    .filter(|(_, c)| matches!(c, ContainerFormat::Enum(_)))
-                    .map(|(name, _)| name)
-                    .collect();
-                let mut tracer = Tracer::new(TracerConfig::default());
-                let mut format = loop {
-                    let (format, _) = tracer.trace_type_once::<T>(&samples).unwrap_or_else(|e| fail(e));
-                    let mut incomplete = false;
-                    for name in &enums {
-                        incomplete |= tracer.check_incomplete_enum(name).is_some();
+                let mut last = None;
+                for sample in SAMPLE_TEXTS {
+                    match trace_with::<T>(sample) {
+                        Ok((format, containers)) => {
+                            return std::rc::Rc::new(Traced { format, containers, enums: crate::harvest::enums::<T>() });
+                        }
+                        Err(e) => last = Some(e),
                     }
-                    if !incomplete {
-                        break format;
-                    }
-                };
-                format.normalize().ok();
-                let containers = tracer
-                    .registry()
-                    .unwrap_or_else(|e| panic!("tracing {}: {e}", std::any::type_name::<T>()));
-                std::rc::Rc::new(Traced { format, containers, enums: crate::harvest::enums::<T>() })
+                }
+                panic!("tracing {}: {}", std::any::type_name::<T>(), last.map(|e| e.to_string()).unwrap_or_default())
             })
             .clone()
     })

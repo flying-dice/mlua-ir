@@ -29,11 +29,15 @@ impl de::Error for Stop {
 /// The enums `T` reaches. Best effort: a part of the type the walk cannot get through is skipped.
 pub fn enums<'de, T: de::Deserialize<'de>>() -> Enums {
     let mut found = Enums::new();
-    let mut stack = Vec::new();
-    if let Err(e) = T::deserialize(Walker { found: &mut found, stack: &mut stack, depth: 0 })
-        && std::env::var_os("MLUA_IR_DEBUG").is_some()
-    {
-        eprintln!("harvesting {}: {e}", std::any::type_name::<T>());
+    // A walk stops at the first field it cannot get through (a date refuses `""`, an enum that parses its own text
+    // refuses a date), so it is walked once per sample text and what each walk found is kept.
+    for sample in crate::foreign::SAMPLE_TEXTS {
+        let mut stack = Vec::new();
+        if let Err(e) = T::deserialize(Walker { found: &mut found, stack: &mut stack, depth: 0, sample })
+            && std::env::var_os("MLUA_IR_DEBUG").is_some()
+        {
+            eprintln!("harvesting {} with {sample:?}: {e}", std::any::type_name::<T>());
+        }
     }
     found
 }
@@ -46,6 +50,8 @@ struct Walker<'a> {
     /// The structs being walked, outermost first.
     stack: &'a mut Vec<&'static str>,
     depth: usize,
+    /// What a string reads as.
+    sample: &'static str,
 }
 
 impl Walker<'_> {
@@ -53,7 +59,7 @@ impl Walker<'_> {
         if self.depth >= MAX_DEPTH {
             return Err(Stop("too deep".into()));
         }
-        Ok(Walker { found: self.found, stack: self.stack, depth: self.depth + 1 })
+        Ok(Walker { found: self.found, stack: self.stack, depth: self.depth + 1, sample: self.sample })
     }
 }
 
@@ -74,10 +80,17 @@ impl<'de> Deserializer<'de> for Walker<'_> {
         deserialize_i64 => visit_i64(0), deserialize_u8 => visit_u8(0), deserialize_u16 => visit_u16(0),
         deserialize_u32 => visit_u32(0), deserialize_u64 => visit_u64(0), deserialize_f32 => visit_f32(0.0),
         deserialize_f64 => visit_f64(0.0), deserialize_char => visit_char('a'),
-        deserialize_str => visit_str(""), deserialize_string => visit_string(String::new()),
         deserialize_bytes => visit_bytes(&[]), deserialize_byte_buf => visit_byte_buf(Vec::new()),
         deserialize_unit => visit_unit(), deserialize_identifier => visit_str(""),
         deserialize_ignored_any => visit_unit(), deserialize_any => visit_unit(),
+    }
+
+    fn deserialize_str<V: Visitor<'de>>(self, visitor: V) -> Result<V::Value, Stop> {
+        visitor.visit_str(self.sample)
+    }
+
+    fn deserialize_string<V: Visitor<'de>>(self, visitor: V) -> Result<V::Value, Stop> {
+        visitor.visit_string(self.sample.to_owned())
     }
 
     fn deserialize_option<V: Visitor<'de>>(mut self, visitor: V) -> Result<V::Value, Stop> {

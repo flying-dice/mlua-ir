@@ -222,8 +222,19 @@ pub fn ty(t: &Ty) -> String {
         },
         Ty::List { item } => format!("{{ {} }}", ty(item)),
         // `{ T }` is Luau's own spelling of `{ [number]: T }`, and the one its checker reads a mixed literal against.
-        Ty::Map { key: k, value } if matches!(**k, Ty::Integer { .. } | Ty::Number) => format!("{{ {} }}", ty(value)),
-        Ty::Map { key: k, value } => format!("{{ [{}]: {} }}", ty(k), ty(value)),
+        // A `nil` value is an absent key in Lua, so an optional value is declared as the value itself (luau-lsp also
+        // refuses correct literals against `{ [K]: T? }?`).
+        Ty::Map { key: k, value } => {
+            let value = match &**value {
+                Ty::Optional { inner } => inner,
+                other => other,
+            };
+            if matches!(**k, Ty::Integer { .. } | Ty::Number) {
+                format!("{{ {} }}", ty(value))
+            } else {
+                format!("{{ [{}]: {} }}", ty(k), ty(value))
+            }
+        }
         Ty::Literal { value } => quoted(value),
         Ty::Union { members } => members
             .iter()

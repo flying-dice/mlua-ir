@@ -32,6 +32,12 @@ pub mod docker_models {
         Foreign(sample_containers())
     }
 
+    /// A container's inspect answer as bollard models it: its dates are parsed text (bollard's `time` feature), which
+    /// tracing reads through a valid date-time sample.
+    pub fn inspect_sample() -> Foreign<bollard_stubs::models::ContainerInspectResponse> {
+        Foreign(bollard_stubs::models::ContainerInspectResponse { id: Some("4f2a".to_owned()), ..Default::default() })
+    }
+
     /// One line for a container: its first name and its state. Takes bollard's type as an argument too.
     pub fn line(container: Foreign<ContainerSummary>) -> String {
         let c = container.0;

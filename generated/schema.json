@@ -1213,6 +1213,20 @@
           "is_async": false
         },
         {
+          "name": "inspect_sample",
+          "doc": "A container's inspect answer as bollard models it: its dates are parsed text (bollard's `time` feature), which\ntracing reads through a valid date-time sample.",
+          "params": [],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "named",
+              "name": "vnd_docker_models_ContainerInspectResponse"
+            }
+          },
+          "raises": null,
+          "is_async": false
+        },
+        {
           "name": "line",
           "doc": "One line for a container: its first name and its state. Takes bollard's type as an argument too.",
           "params": [
@@ -6114,6 +6128,919 @@
       }
     },
     {
+      "name": "vnd_docker_models_ContainerConfig",
+      "short_name": "ContainerConfig",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Hostname",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Domainname",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "User",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStdin",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStdout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AttachStderr",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExposedPorts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "nil"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Tty",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OpenStdin",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StdinOnce",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Env",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Cmd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Healthcheck",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HealthConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ArgsEscaped",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Image",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Volumes",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "map",
+                  "key": {
+                    "kind": "string"
+                  },
+                  "value": {
+                    "kind": "nil"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "WorkingDir",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Entrypoint",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkDisabled",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OnBuild",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StopSignal",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StopTimeout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Shell",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerInspectResponse",
+      "short_name": "ContainerInspectResponse",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Id",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Created",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Path",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Args",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "State",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerState"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Image",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ResolvConfPath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostnamePath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostsPath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "LogPath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "RestartCount",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Driver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Platform",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageManifestDescriptor",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_OciDescriptor"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MountLabel",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ProcessLabel",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AppArmorProfile",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExecIDs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HostConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GraphDriver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_DriverData"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Storage",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_Storage"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRw",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SizeRootFs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mounts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_MountPoint"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Config",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkSettings",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_NetworkSettings"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerState",
+      "short_name": "ContainerState",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_ContainerStateStatusEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Running",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Paused",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Restarting",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OOMKilled",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Dead",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Pid",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExitCode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Error",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StartedAt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "FinishedAt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Health",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_Health"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ContainerStateStatusEnum",
+      "short_name": "ContainerStateStatusEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "created",
+            "doc": null
+          },
+          {
+            "value": "running",
+            "doc": null
+          },
+          {
+            "value": "paused",
+            "doc": null
+          },
+          {
+            "value": "restarting",
+            "doc": null
+          },
+          {
+            "value": "removing",
+            "doc": null
+          },
+          {
+            "value": "exited",
+            "doc": null
+          },
+          {
+            "value": "dead",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
       "name": "vnd_docker_models_ContainerSummary",
       "short_name": "ContainerSummary",
       "module": "vnd:docker_models",
@@ -6546,6 +7473,182 @@
       }
     },
     {
+      "name": "vnd_docker_models_DeviceMapping",
+      "short_name": "DeviceMapping",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "PathOnHost",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PathInContainer",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupPermissions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_DeviceRequest",
+      "short_name": "DeviceRequest",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Driver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Count",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceIDs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Capabilities",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "list",
+                  "item": {
+                    "kind": "string"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_DriverData",
+      "short_name": "DriverData",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Data",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
       "name": "vnd_docker_models_EndpointIpamConfig",
       "short_name": "EndpointIpamConfig",
       "module": "vnd:docker_models",
@@ -6811,6 +7914,1608 @@
       }
     },
     {
+      "name": "vnd_docker_models_Health",
+      "short_name": "Health",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Status",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HealthStatusEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "FailingStreak",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Log",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_HealthcheckResult"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HealthConfig",
+      "short_name": "HealthConfig",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Test",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Interval",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Timeout",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Retries",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StartPeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StartInterval",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HealthStatusEnum",
+      "short_name": "HealthStatusEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "none",
+            "doc": null
+          },
+          {
+            "value": "starting",
+            "doc": null
+          },
+          {
+            "value": "healthy",
+            "doc": null
+          },
+          {
+            "value": "unhealthy",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HealthcheckResult",
+      "short_name": "HealthcheckResult",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Start",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "End",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExitCode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Output",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HostConfig",
+      "short_name": "HostConfig",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "CpuShares",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Memory",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupParent",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioWeight",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 65535
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioWeightDevice",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ResourcesBlkioWeightDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceReadBps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceWriteBps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceReadIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BlkioDeviceWriteIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ThrottleDevice"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuPeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuQuota",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuRealtimePeriod",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuRealtimeRuntime",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpusetCpus",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpusetMems",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Devices",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_DeviceMapping"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceCgroupRules",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DeviceRequests",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_DeviceRequest"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemoryReservation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemorySwap",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MemorySwappiness",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NanoCpus",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OomKillDisable",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Init",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PidsLimit",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Ulimits",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_ResourcesUlimits"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuCount",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CpuPercent",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IOMaximumIOps",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IOMaximumBandwidth",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Binds",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ContainerIDFile",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "LogConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HostConfigLogConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NetworkMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PortBindings",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "optional",
+                  "inner": {
+                    "kind": "list",
+                    "item": {
+                      "kind": "named",
+                      "name": "vnd_docker_models_PortBinding"
+                    }
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "RestartPolicy",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_RestartPolicy"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "AutoRemove",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumeDriver",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumesFrom",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mounts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_Mount"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ConsoleSize",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "integer",
+                  "min": 0,
+                  "max": 9007199254740992
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Annotations",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CapAdd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CapDrop",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CgroupnsMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HostConfigCgroupnsModeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Dns",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DnsOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DnsSearch",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ExtraHosts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "GroupAdd",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "IpcMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Cgroup",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Links",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "OomScoreAdj",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PidMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Privileged",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "PublishAllPorts",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadonlyRootfs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SecurityOpt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "StorageOpt",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Tmpfs",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "UTSMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "UsernsMode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ShmSize",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Sysctls",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Runtime",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Isolation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_HostConfigIsolationEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MaskedPaths",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadonlyPaths",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HostConfigCgroupnsModeEnum",
+      "short_name": "HostConfigCgroupnsModeEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "private",
+            "doc": null
+          },
+          {
+            "value": "host",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HostConfigIsolationEnum",
+      "short_name": "HostConfigIsolationEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "default",
+            "doc": null
+          },
+          {
+            "value": "process",
+            "doc": null
+          },
+          {
+            "value": "hyperv",
+            "doc": null
+          },
+          {
+            "value": "",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_HostConfigLogConfig",
+      "short_name": "HostConfigLogConfig",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Config",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_Mount",
+      "short_name": "Mount",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Target",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Source",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Type",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountTypeEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnly",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Consistency",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "BindOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountBindOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "VolumeOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountVolumeOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ImageOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountImageOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "TmpfsOptions",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountTmpfsOptions"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountBindOptions",
+      "short_name": "MountBindOptions",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Propagation",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountBindOptionsPropagationEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "NonRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "CreateMountpoint",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnlyNonRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "ReadOnlyForceRecursive",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountBindOptionsPropagationEnum",
+      "short_name": "MountBindOptionsPropagationEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "private",
+            "doc": null
+          },
+          {
+            "value": "rprivate",
+            "doc": null
+          },
+          {
+            "value": "shared",
+            "doc": null
+          },
+          {
+            "value": "rshared",
+            "doc": null
+          },
+          {
+            "value": "slave",
+            "doc": null
+          },
+          {
+            "value": "rslave",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountImageOptions",
+      "short_name": "MountImageOptions",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Subpath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
       "name": "vnd_docker_models_MountPoint",
       "short_name": "MountPoint",
       "module": "vnd:docker_models",
@@ -6955,6 +9660,293 @@
           {
             "value": "cluster",
             "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountTmpfsOptions",
+      "short_name": "MountTmpfsOptions",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "SizeBytes",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Mode",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "list",
+                "item": {
+                  "kind": "list",
+                  "item": {
+                    "kind": "string"
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountTypeEnum",
+      "short_name": "MountTypeEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "bind",
+            "doc": null
+          },
+          {
+            "value": "volume",
+            "doc": null
+          },
+          {
+            "value": "image",
+            "doc": null
+          },
+          {
+            "value": "tmpfs",
+            "doc": null
+          },
+          {
+            "value": "npipe",
+            "doc": null
+          },
+          {
+            "value": "cluster",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountVolumeOptions",
+      "short_name": "MountVolumeOptions",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "NoCopy",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "boolean"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Labels",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "DriverConfig",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_MountVolumeOptionsDriverConfig"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Subpath",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_MountVolumeOptionsDriverConfig",
+      "short_name": "MountVolumeOptionsDriverConfig",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Options",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "string"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_NetworkSettings",
+      "short_name": "NetworkSettings",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "SandboxID",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "SandboxKey",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Ports",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "optional",
+                  "inner": {
+                    "kind": "list",
+                    "item": {
+                      "kind": "named",
+                      "name": "vnd_docker_models_PortBinding"
+                    }
+                  }
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Networks",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "map",
+                "key": {
+                  "kind": "string"
+                },
+                "value": {
+                  "kind": "named",
+                  "name": "vnd_docker_models_EndpointSettings"
+                }
+              }
+            },
+            "default": null,
+            "readonly": false
           }
         ]
       }
@@ -7155,6 +10147,42 @@
       }
     },
     {
+      "name": "vnd_docker_models_PortBinding",
+      "short_name": "PortBinding",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "HostIp",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "HostPort",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
       "name": "vnd_docker_models_PortSummary",
       "short_name": "PortSummary",
       "module": "vnd:docker_models",
@@ -7207,6 +10235,279 @@
               "kind": "optional",
               "inner": {
                 "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ResourcesBlkioWeightDevice",
+      "short_name": "ResourcesBlkioWeightDevice",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Path",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Weight",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": 0,
+                "max": 9007199254740992
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ResourcesUlimits",
+      "short_name": "ResourcesUlimits",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Soft",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Hard",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_RestartPolicy",
+      "short_name": "RestartPolicy",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_RestartPolicyNameEnum"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "MaximumRetryCount",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_RestartPolicyNameEnum",
+      "short_name": "RestartPolicyNameEnum",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "string_enum",
+        "variants": [
+          {
+            "value": "",
+            "doc": null
+          },
+          {
+            "value": "no",
+            "doc": null
+          },
+          {
+            "value": "always",
+            "doc": null
+          },
+          {
+            "value": "unless-stopped",
+            "doc": null
+          },
+          {
+            "value": "on-failure",
+            "doc": null
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_RootFsStorage",
+      "short_name": "RootFsStorage",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Snapshot",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_RootFsStorageSnapshot"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_RootFsStorageSnapshot",
+      "short_name": "RootFsStorageSnapshot",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Name",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_Storage",
+      "short_name": "Storage",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "RootFS",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "named",
+                "name": "vnd_docker_models_RootFsStorage"
+              }
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "vnd_docker_models_ThrottleDevice",
+      "short_name": "ThrottleDevice",
+      "module": "vnd:docker_models",
+      "rust": "bollard_stubs::models::ContainerInspectResponse",
+      "doc": null,
+      "body": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "Path",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "string"
+              }
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "Rate",
+            "doc": null,
+            "ty": {
+              "kind": "optional",
+              "inner": {
+                "kind": "integer",
+                "min": -9223372036854775808,
+                "max": 9223372036854775807
               }
             },
             "default": null,

@@ -197,7 +197,7 @@ export type vnd_bollard_HostConfig = {
 	ContainerIDFile: string?,
 	LogConfig: vnd_bollard_HostConfigLogConfig?,
 	NetworkMode: string?,
-	PortBindings: { [string]: { vnd_bollard_PortBinding }? }?,
+	PortBindings: { [string]: { vnd_bollard_PortBinding } }?,
 	RestartPolicy: vnd_bollard_RestartPolicy?,
 	AutoRemove: boolean?,
 	VolumeDriver: string?,
