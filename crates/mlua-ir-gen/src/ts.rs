@@ -109,6 +109,8 @@ fn throws(f: &Function) -> Option<String> {
 
 fn doc(out: &mut String, text: Option<&str>, indent: &str) {
     let Some(text) = text else { return };
+    // `*/` would end the comment early (a glob like `src/**/*.rs` in an example): the slash becomes U+2215.
+    let text = text.replace("*/", "*\u{2215}");
     let lines: Vec<&str> = text.lines().collect();
     if lines.len() == 1 {
         let _ = writeln!(out, "{indent}/** {} */", lines[0]);
@@ -227,6 +229,7 @@ fn wrapped(t: &Ty) -> String {
 pub fn ty(t: &Ty) -> String {
     match t {
         Ty::Nil => "undefined".into(),
+        Ty::Never => "never".into(),
         Ty::Boolean => "boolean".into(),
         Ty::Integer { .. } | Ty::Number => "number".into(),
         Ty::String => "string".into(),
@@ -245,14 +248,21 @@ pub fn ty(t: &Ty) -> String {
     }
 }
 
+/// A parameter's name as TypeScript can write it: a reserved word (`new`, `class`) gets a trailing `_`. Only the
+/// declaration sees it; a script passes arguments by position.
+fn param_name(name: &str) -> String {
+    if RESERVED.contains(&name) || name == "this" { format!("{name}_") } else { name.to_owned() }
+}
+
 fn param(p: &Param) -> String {
+    let name = param_name(&p.name);
     if p.variadic {
-        return format!("...{}: {}[]", p.name, wrapped(&p.ty));
+        return format!("...{name}: {}[]", wrapped(&p.ty));
     }
     match (&p.ty, p.optional) {
-        (Ty::Optional { inner }, true) => format!("{}?: {}", p.name, ty(inner)),
-        (t, true) => format!("{}?: {}", p.name, ty(t)),
-        (t, false) => format!("{}: {}", p.name, ty(t)),
+        (Ty::Optional { inner }, true) => format!("{name}?: {}", ty(inner)),
+        (t, true) => format!("{name}?: {}", ty(t)),
+        (t, false) => format!("{name}: {}", ty(t)),
     }
 }
 

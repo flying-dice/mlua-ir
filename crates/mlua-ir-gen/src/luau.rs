@@ -214,6 +214,7 @@ fn inline_table(fields: &[Field]) -> String {
 pub fn ty(t: &Ty) -> String {
     match t {
         Ty::Nil => "nil".into(),
+        Ty::Never => "never".into(),
         Ty::Boolean => "boolean".into(),
         Ty::Integer { .. } | Ty::Number => "number".into(),
         Ty::String => "string".into(),

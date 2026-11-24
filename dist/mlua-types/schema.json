@@ -953,6 +953,30 @@
           "is_async": false
         },
         {
+          "name": "fail",
+          "doc": "Fails with `reason`, always: a call that never returns normally is declared `never`. A doc that mentions a\nglob such as `src/**/*.rs` stays a valid TypeScript comment, and a parameter named `new` is renamed there.",
+          "params": [
+            {
+              "name": "new",
+              "ty": {
+                "kind": "string"
+              },
+              "optional": false
+            }
+          ],
+          "returns": {
+            "kind": "one",
+            "ty": {
+              "kind": "never"
+            }
+          },
+          "raises": {
+            "kind": "named",
+            "name": "std_sort_SortError"
+          },
+          "is_async": false
+        },
+        {
           "name": "each",
           "doc": "Calls `visit(item, index)` for each item, in order; how many it visited.",
           "params": [
@@ -1974,6 +1998,54 @@
             "fields": [
               {
                 "name": "text",
+                "doc": null,
+                "ty": {
+                  "kind": "string"
+                },
+                "default": null,
+                "readonly": false
+              }
+            ]
+          }
+        ],
+        "common": [
+          {
+            "name": "message",
+            "doc": "What went wrong, for a person. Branch on `kind`, not on these words.",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          },
+          {
+            "name": "op",
+            "doc": "The call that failed (`std:fs.read`).",
+            "ty": {
+              "kind": "string"
+            },
+            "default": null,
+            "readonly": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "std_sort_SortError",
+      "short_name": "SortError",
+      "module": "std:sort",
+      "rust": "mlua_ir_demo::s14_callbacks::sort::SortError",
+      "doc": "Why `fail` failed.",
+      "body": {
+        "kind": "error",
+        "tag": "kind",
+        "variants": [
+          {
+            "tag_value": "failed",
+            "doc": "Always.",
+            "fields": [
+              {
+                "name": "reason",
                 "doc": null,
                 "ty": {
                   "kind": "string"

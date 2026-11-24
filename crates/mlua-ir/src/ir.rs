@@ -101,6 +101,8 @@ pub enum Returns {
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Ty {
     Nil,
+    /// Nothing: a call that never returns normally (it always raises).
+    Never,
     Boolean,
     /// A whole number in `min..=max` (Lua has one number type; the range is enforced on the way in).
     Integer { min: i64, max: u64 },

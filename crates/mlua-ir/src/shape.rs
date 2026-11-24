@@ -32,6 +32,13 @@ impl<T: Shape> Shape for Variadic<T> {
     const VARIADIC: bool = true;
 }
 
+/// A function returning `Result<Infallible, E>` (or `Infallible`) never returns normally.
+impl Shape for std::convert::Infallible {
+    fn shape(_: &mut Registry) -> Ty {
+        Ty::Never
+    }
+}
+
 impl Shape for () {
     fn shape(_: &mut Registry) -> Ty {
         Ty::Nil

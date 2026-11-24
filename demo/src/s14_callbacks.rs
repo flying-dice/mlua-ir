@@ -33,6 +33,21 @@ pub mod sort {
         Ok(())
     }
 
+    /// Fails with `reason`, always: a call that never returns normally is declared `never`. A doc that mentions a
+    /// glob such as `src/**/*.rs` stays a valid TypeScript comment, and a parameter named `new` is renamed there.
+    pub fn fail(new: String) -> Result<std::convert::Infallible, mlua_ir::Raise<SortError>> {
+        Err(mlua_ir::Raise(SortError::Failed { reason: new }))
+    }
+
+    /// Why `fail` failed.
+    #[derive(Debug, serde::Serialize, thiserror::Error, mlua_ir::LuaError)]
+    #[serde(tag = "kind", rename_all = "snake_case")]
+    pub enum SortError {
+        /// Always.
+        #[error("{reason}")]
+        Failed { reason: String },
+    }
+
     /// Calls `visit(item, index)` for each item, in order; how many it visited.
     pub fn each(items: Vec<String>, visit: Callback<fn(item: String, index: u32)>) -> mlua::Result<u32> {
         let mut count = 0;

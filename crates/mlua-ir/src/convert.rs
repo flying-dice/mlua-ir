@@ -85,6 +85,12 @@ impl FromLuaArg for bool {
     }
 }
 
+impl IntoLuaRet for std::convert::Infallible {
+    fn into_lua_ret(self, _: &Lua, _: &'static str) -> mlua::Result<Value> {
+        match self {}
+    }
+}
+
 impl IntoLuaRet for bool {
     fn into_lua_ret(self, _: &Lua, _: &'static str) -> mlua::Result<Value> {
         Ok(Value::Boolean(self))
